@@ -1,25 +1,28 @@
-import {SessionMeta} from "./sessionMeta";
-import {DriverState} from "./driverState";
-import {TimingState} from "./timingState";
-import {WeatherState} from "./weatherState";
-import {SystemState} from "./systemState";
-import {TrackState} from "./trackState";
+import { SessionState } from "./session/sessionState";
+import { RaceStatusState } from "./race/raceStatusState";
+import { WeatherState } from "./weather/weatherState";
+import { DriverState } from "./driver/driverState";
+import { RaceControlMessageState } from "./race/raceControlMessageState";
+import { TeamRadioState } from "./race/teamRadioState";
 
 export interface RaceState {
-    sessionId: string
+    schemaVersion: number;
 
-    meta: SessionMeta
+    sessionId: string;
+    sequence: number;
 
-    drivers: Map<string, DriverState>
+    generatedAt?: number;      // когда агрегатор собрал текущее состояние/срез
+    sourceTimestamp?: number;  // max timestamp входящих событий
 
-    timing: TimingState
+    session: SessionState;
+    raceStatus: RaceStatusState;
+    weather?: WeatherState;
 
-    track: TrackState
+    drivers: Map<string, DriverState>;
 
-    weather: WeatherState
+    raceControlMessages: RaceControlMessageState[];
+    teamRadio: TeamRadioState[];
 
-    system: SystemState
-
-    lastMessageId: number
-    lastUpdateTs: number
+    lastMessageId: number;
+    lastUpdateTs: number;
 }

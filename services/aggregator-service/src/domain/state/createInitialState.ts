@@ -2,41 +2,65 @@ import { RaceState } from "./raceState";
 
 export function createInitialState(): RaceState {
     return {
-        sessionId: "",
+        schemaVersion: 1,
 
-        meta: {
-            name: "",
-            type: "Practice",
-            status: "Paused",
-            trackName: "",
-            sessionStartTime: undefined
+        sessionId: "",
+        sequence: 0,
+
+        generatedAt: undefined,
+        sourceTimestamp: undefined,
+
+        session: {
+            meetingKey: undefined,
+            sessionKey: undefined,
+
+            grandPrixName: "",
+            officialName: undefined,
+
+            location: undefined,
+            countryCode: undefined,
+            countryName: undefined,
+            circuitShortName: undefined,
+
+            sessionType: "unknown",
+            sessionName: "",
+            sessionNumber: undefined,
+            sessionPart: undefined,
+            qualifyingPart: undefined,
+
+            startTime: undefined,
+            endTime: undefined,
+            gmtOffset: undefined
+        },
+
+        raceStatus: {
+            sessionStatus: "unknown",
+            trackStatus: "unknown",
+            trackStatusMessage: undefined,
+            clock: {
+                utc: 0,
+                remainingMs: undefined,
+                extrapolating: false
+            },
+            leaderRacingNumber: undefined,
+            totalCars: 0,
+            classifiedCars: 0
+        },
+
+        weather: {
+            airTempC: undefined,
+            trackTempC: undefined,
+            humidityPct: undefined,
+            pressureHpa: undefined,
+            rainfall: undefined,
+            windDirectionDeg: undefined,
+            windSpeedMps: undefined
         },
 
         drivers: new Map(),
 
-        timing: {
-            currentLap: 0,
-            totalLaps: undefined,
-            fastestLapOwner: undefined
-        },
-
-        track: {
-            status: "GREEN",
-            sectorFlags: {
-                s1: undefined,
-                s2: undefined,
-                s3: undefined
-            }
-        },
-
-        weather: {
-            airTemp: 0,
-            trackTemp: 0
-        },
-
-        system: {
-            heartbeatTs: 0
-        },
+        raceControlMessages: [],
+        teamRadio: [],
 
         lastMessageId: 0,
         lastUpdateTs: 0

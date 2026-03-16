@@ -1,5 +1,7 @@
+import {AggregatorDeltaType} from "./aggregatorDeltaType";
+
 export interface DomainDelta {
-    type: string
-    messageId: number
-    timestamp: number
+    type: AggregatorDeltaType;
+    messageId: number;
+    timestamp: number; // UTC epoch millis
 }
