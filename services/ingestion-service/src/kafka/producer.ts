@@ -6,11 +6,22 @@ export class KafkaProducer {
 
     constructor() {
         const kafka = new Kafka({
-            clientId: config.kafka.clientId,
-            brokers: config.kafka.brokers
-        });
+            clientId: "ingestion-service",
+            brokers: [
+                "localhost:9092",
+                "localhost:9093",
+                "localhost:9094"
+            ]
+        })
 
-        this.producer = kafka.producer();
+        this.producer = kafka.producer({
+            //acks: -1,                 // acks=all
+            idempotent: true,         // защита от дублей
+            maxInFlightRequests: 5,   // безопасно для idempotent
+            retry: {
+                retries: 10
+            }
+        });
     }
 
     async connect() {

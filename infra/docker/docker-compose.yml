@@ -1,4 +1,7 @@
+version: "3.8"
+
 services:
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: f1-zookeeper
@@ -7,33 +10,82 @@ services:
     ports:
       - "2181:2181"
 
-  kafka:
+  kafka-1:
     image: confluentinc/cp-kafka:7.5.0
-    container_name: f1-kafka
+    container_name: f1-kafka-1
     depends_on:
       - zookeeper
     ports:
       - "9092:9092"
     environment:
+
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
-      # INTERNAL — для контейнеров
-      # EXTERNAL — для доступа с хоста (Mac)
-      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:29092
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:9092
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:29092,EXTERNAL://localhost:9092
+
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
 
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+
+
+  kafka-2:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: f1-kafka-2
+    depends_on:
+      - zookeeper
+    ports:
+      - "9093:9093"
+    environment:
+
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29093,EXTERNAL://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-2:29093,EXTERNAL://localhost:9093
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+
+
+  kafka-3:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: f1-kafka-3
+    depends_on:
+      - zookeeper
+    ports:
+      - "9094:9094"
+    environment:
+
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29094,EXTERNAL://0.0.0.0:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-3:29094,EXTERNAL://localhost:9094
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+
 
   redis:
     image: redis:7-alpine
     container_name: f1-redis
     ports:
       - "6379:6379"
+
 
   postgres:
     image: postgres:15
@@ -47,11 +99,12 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+
   akhq:
     image: tchiotludo/akhq
     container_name: f1-akhq
     depends_on:
-      - kafka
+      - kafka-1
     ports:
       - "9001:8080"
     environment:
@@ -60,7 +113,52 @@ services:
           connections:
             local:
               properties:
-                bootstrap.servers: "kafka:9092"
+                bootstrap.servers: "kafka-1:29092,kafka-2:29093,kafka-3:29094"
+
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: f1-kafka-init
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+    entrypoint: /bin/bash
+    command: -ec "
+
+      echo 'Waiting for Kafka...';
+      cub kafka-ready -b kafka-1:29092 1 40;
+
+      echo 'Creating telemetry.raw';
+
+      kafka-topics --create --if-not-exists \
+      --topic telemetry.raw \
+      --bootstrap-server kafka-1:29092 \
+      --replication-factor 3 \
+      --partitions 6 \
+      --config retention.ms=86400000 \
+      --config min.insync.replicas=2;
+
+      echo 'Creating telemetry.snapshot';
+
+      kafka-topics --create --if-not-exists \
+      --topic telemetry.snapshot \
+      --bootstrap-server kafka-1:29092 \
+      --replication-factor 3 \
+      --partitions 3 \
+      --config retention.ms=-1;
+
+      echo 'Creating system.logs';
+
+      kafka-topics --create --if-not-exists \
+      --topic system.logs \
+      --bootstrap-server kafka-1:29092 \
+      --replication-factor 3 \
+      --partitions 3 \
+      --config retention.ms=604800000;
+
+      echo 'Topics successfully created';
+      "
 
 volumes:
   pgdata:

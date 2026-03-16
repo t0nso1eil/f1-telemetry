@@ -10,11 +10,11 @@ export interface NormalizedEvent {
 
 export class TelemetryNormalizer {
 
-    normalize(stream: string, payload: any): NormalizedEvent {
+    normalize(stream: string, payload: any, ts?: string): NormalizedEvent {
 
         return {
             eventId: uuid(),
-            timestamp: Date.now(),
+            timestamp: ts ? Date.parse(ts) : Date.now(),
             stream,
             source: "f1-live-timing",
             payload

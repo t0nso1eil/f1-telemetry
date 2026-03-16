@@ -18,6 +18,8 @@
     "@types/node": "^20.11.30",
     "@types/ws": "^8.5.10",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "winston": "^3.19.0",
+    "winston-daily-rotate-file": "^5.0.0"
   }
 }

@@ -1,6 +1,7 @@
 export interface ParsedEvent {
     stream: string;
     payload: any;
+    timestamp: Date;
 }
 
 export class F1Parser {
@@ -14,12 +15,15 @@ export class F1Parser {
 
         for (const msg of raw.M) {
 
-            if (!msg.M || !msg.A)
+            if (!msg.A || !Array.isArray(msg.A))
                 continue;
 
+            const [stream, payload, timestamp] = msg.A;
+
             events.push({
-                stream: msg.M,
-                payload: msg.A
+                stream,
+                payload,
+                timestamp
             });
         }
 

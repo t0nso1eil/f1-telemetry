@@ -104,15 +104,13 @@ export class F1SignalRClient {
 
     private subscribe() {
         const streams = [
-            "Heartbeat",
-            "CarData.z",
-            "Position.z",
-            "TimingData",
-            "TimingAppData",
-            "WeatherData",
-            "TrackStatus",
-            "SessionStatus",
-            "SessionInfo"
+            "Heartbeat", "AudioStreams", "DriverList",
+            "ExtrapolatedClock", "RaceControlMessages",
+            "SessionInfo", "SessionStatus", "TeamRadio",
+            "TimingAppData", "TimingStats", "TrackStatus",
+            "WeatherData", "Position.z", "CarData.z",
+            "ContentStreams", "SessionData", "TimingData",
+            "TopThree", "RcmSeries", "LapCount"
         ];
 
         const msg = {
