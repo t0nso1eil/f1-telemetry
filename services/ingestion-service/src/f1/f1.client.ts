@@ -1,6 +1,7 @@
 import axios from "axios";
 import WebSocket from "ws";
-import { config } from "../config";
+import { config } from "../config/config";
+import { f1Logger } from "../logger";
 
 type Handler = (data: any) => Promise<void>;
 
@@ -9,37 +10,44 @@ export class F1SignalRClient {
     private cookie?: string;
     private ws?: WebSocket;
     private handler?: Handler;
+    private stopped = false;
 
-    async start(handler: Handler) {
-
+    async start(handler: Handler): Promise<void> {
         this.handler = handler;
+        this.stopped = false;
 
         await this.negotiate();
-
-        await this.connect(); // subscribe теперь внутри connect()
-
+        await this.connect();
     }
 
-    private async negotiate() {
-        const hub = encodeURIComponent(JSON.stringify(config.f1.hub));
+    async stop(): Promise<void> {
+        this.stopped = true;
 
-        const url =
-            `${config.f1.negotiateUrl}?connectionData=${hub}&clientProtocol=1.5`;
+        if (this.ws) {
+            this.ws.removeAllListeners();
+            this.ws.close();
+            this.ws = undefined;
+        }
+
+        f1Logger.info("F1 client stopped");
+    }
+
+    private async negotiate(): Promise<void> {
+        const hub = encodeURIComponent(JSON.stringify(config.f1.hub));
+        const url = `${config.f1.negotiateUrl}?connectionData=${hub}&clientProtocol=1.5`;
 
         const res = await axios.get(url);
 
         this.connectionToken = res.data.ConnectionToken;
-
         this.cookie = Array.isArray(res.headers["set-cookie"])
             ? res.headers["set-cookie"].join("; ")
             : res.headers["set-cookie"];
 
-        console.log("✅ SignalR negotiated");
+        f1Logger.info("SignalR negotiated");
     }
 
     private async connect(): Promise<void> {
         return new Promise((resolve, reject) => {
-
             const hub = encodeURIComponent(JSON.stringify(config.f1.hub));
             const token = encodeURIComponent(this.connectionToken!);
 
@@ -54,74 +62,91 @@ export class F1SignalRClient {
                 headers: {
                     Cookie: this.cookie!,
                     "User-Agent": "BestHTTP",
-                    "Accept-Encoding": "gzip,identity"
-                }
+                    "Accept-Encoding": "gzip,identity",
+                },
             });
 
             this.ws.on("open", () => {
-                console.log("✅ F1 WebSocket connected");
-
-                this.subscribe();   // ← ВАЖНО: теперь тут
-
+                f1Logger.info("F1 WebSocket connected");
+                this.subscribe();
                 resolve();
             });
 
             this.ws.on("message", async (data) => {
-
                 try {
-
                     const parsed = JSON.parse(data.toString());
 
-                    if (!parsed || Object.keys(parsed).length === 0)
+                    if (!parsed || Object.keys(parsed).length === 0) {
                         return;
+                    }
 
                     await this.handler?.({
                         timestamp: Date.now(),
-                        data: parsed
+                        data: parsed,
                     });
-
                 } catch (err) {
-                    console.error("Parse error", err);
+                    f1Logger.error("WebSocket message parse error", { error: err });
                 }
-
             });
 
             this.ws.on("close", () => {
+                if (this.stopped) {
+                    f1Logger.info("WebSocket closed after stop");
+                    return;
+                }
 
-                console.log("⚠ reconnecting...");
+                f1Logger.warn("WebSocket closed, reconnecting", {
+                    delayMs: config.f1.reconnectDelayMs,
+                });
 
-                setTimeout(
-                    () => this.start(this.handler!),
-                    config.f1.reconnectDelay
-                );
-
+                setTimeout(() => {
+                    if (!this.stopped && this.handler) {
+                        void this.start(this.handler);
+                    }
+                }, config.f1.reconnectDelayMs);
             });
 
-            this.ws.on("error", reject);
-
+            this.ws.on("error", (err) => {
+                f1Logger.error("WebSocket error", { error: err });
+                reject(err);
+            });
         });
     }
 
-    private subscribe() {
+    private subscribe(): void {
         const streams = [
-            "AudioStreams", "DriverList",
-            "ExtrapolatedClock", "RaceControlMessages",
-            "SessionInfo", "SessionStatus", "TeamRadio",
-            "TimingAppData", "TimingStats", "TrackStatus",
-            "WeatherData", "Position.z", "CarData.z",
-            "ContentStreams", "SessionData", "TimingData",
-            "TopThree", "RcmSeries", "LapCount"
+            "AudioStreams",
+            "DriverList",
+            "ExtrapolatedClock",
+            "RaceControlMessages",
+            "SessionInfo",
+            "SessionStatus",
+            "TeamRadio",
+            "TimingAppData",
+            "TimingStats",
+            "TrackStatus",
+            "WeatherData",
+            "Position.z",
+            "CarData.z",
+            "ContentStreams",
+            "SessionData",
+            "TimingData",
+            "TopThree",
+            "RcmSeries",
+            "LapCount",
         ];
 
         const msg = {
             H: "Streaming",
             M: "Subscribe",
             A: [streams],
-            I: 1
+            I: 1,
         };
 
-        this.ws!.send(JSON.stringify(msg));
+        this.ws?.send(JSON.stringify(msg));
 
-        console.log("✅ Subscribed to streams");
+        f1Logger.info("Subscribed to F1 streams", {
+            streamsCount: streams.length,
+        });
     }
 }

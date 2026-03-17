@@ -1,136 +1,87 @@
-import { AggregatorDelta } from "../domain/delta/agregatorDelta"
+import { AggregatorDelta } from "../domain/delta/aggregatorDelta";
 
-import { parseDriverList } from "./streams/parseDriverList"
-import { parseTimingData } from "./streams/parseTimingData"
-import { parseWeather } from "./streams/parseWeather"
-import { parseTrackStatus } from "./streams/parseTrackStatus"
-import { parseSession } from "./streams/parseSession"
+import { parseDriverList } from "./streams/parseDriverList";
+import { parseTimingData } from "./streams/parseTimingData";
+import { parseTimingAppData } from "./streams/parseTimingAppData";
+import { parseWeather } from "./streams/parseWeather";
+import { parseTrackStatus } from "./streams/parseTrackStatus";
+import { parseSessionInfo } from "./streams/parseSessionInfo";
+import { parseSessionStatus } from "./streams/parseSessionStatus";
+import { parseRaceControlMessages } from "./streams/parseRaceControlMessages";
+import { parseTeamRadio } from "./streams/parseTeamRadio";
 
-import { parserLogger, errorLogger } from "../logger/logger"
-
+import { parserLogger, errorLogger } from "../logger/logger";
 
 export function parseNormalizedEvent(event: any): AggregatorDelta[] {
-
-    const deltas: AggregatorDelta[] = []
+    const deltas: AggregatorDelta[] = [];
 
     if (!event) {
-        parserLogger.warn("parseNormalizedEvent: empty event")
-        return deltas
+        parserLogger.warn("parseNormalizedEvent: empty event");
+        return deltas;
     }
 
-    const stream = event.stream
-    const payload = event.payload
-    const timestamp = event.timestamp ?? Date.now()
+    const stream = event.stream;
+    const payload = event.payload;
+    const timestamp = Number(event.timestamp ?? Date.now());
 
-    // 🔎 Лог входящего события
     parserLogger.debug({
         message: "event received",
         stream,
         timestamp
-    })
+    });
 
     if (!payload) {
-
         parserLogger.warn({
             message: "event without payload",
             stream
-        })
+        });
 
-        return deltas
+        return deltas;
     }
 
     try {
-
-        let parsed: AggregatorDelta[] = []
-
         switch (stream) {
-
             case "DriverList":
-
-                parserLogger.debug({
-                    message: "parsing DriverList"
-                })
-
-                parsed = parseDriverList(payload, timestamp)
-                break
-
+                return parseDriverList(payload, timestamp);
 
             case "TimingData":
+                return parseTimingData(payload, timestamp);
 
-                parserLogger.debug({
-                    message: "parsing TimingData"
-                })
-
-                parsed = parseTimingData(payload, timestamp)
-                break
-
+            case "TimingAppData":
+                return parseTimingAppData(payload, timestamp);
 
             case "WeatherData":
-
-                parserLogger.debug({
-                    message: "parsing WeatherData"
-                })
-
-                parsed = parseWeather(payload, timestamp)
-                break
-
+                return parseWeather(payload, timestamp);
 
             case "TrackStatus":
+                return parseTrackStatus(payload, timestamp);
 
-                parserLogger.debug({
-                    message: "parsing TrackStatus"
-                })
+            case "SessionInfo":
+                return parseSessionInfo(payload, timestamp);
 
-                parsed = parseTrackStatus(payload, timestamp)
-                break
+            case "SessionStatus":
+                return parseSessionStatus(payload, timestamp);
 
+            case "RaceControlMessages":
+                return parseRaceControlMessages(payload, timestamp);
 
-            case "SessionData":
-
-                parserLogger.debug({
-                    message: "parsing SessionData"
-                })
-
-                parsed = parseSession(payload, timestamp)
-                break
-
+            case "TeamRadio":
+                return parseTeamRadio(payload, timestamp);
 
             default:
-
                 parserLogger.debug({
                     message: "unknown stream skipped",
                     stream
-                })
-
-                return deltas
+                });
+                return deltas;
         }
-
-        // 🔎 Лог результатов парсинга
-        parserLogger.debug({
-            message: "deltas produced",
-            stream,
-            count: parsed.length
-        })
-
-        if (parsed.length > 0) {
-
-            parserLogger.debug({
-                message: "delta preview",
-                delta: parsed[0]
-            })
-
-        }
-
-        return parsed
-
     } catch (err) {
-
         errorLogger.error({
             message: "parser error",
             stream,
             error: err
-        })
+        });
 
-        return deltas
+        return deltas;
     }
 }

@@ -1,57 +1,30 @@
-import winston from "winston"
-import DailyRotateFile from "winston-daily-rotate-file"
-import path from "path"
-import fs from "fs"
+import winston from "winston";
+import { config } from "../config/config";
 
-function ensureDir(dir: string) {
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true })
-    }
-}
+export function createModuleLogger(module: string) {
+    const jsonFormat = winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.errors({ stack: true }),
+        winston.format.json()
+    );
 
-export function createModuleLogger(
-    service: string,
-    module: string
-) {
+    const prettyFormat = winston.format.combine(
+        winston.format.colorize(),
+        winston.format.timestamp(),
+        winston.format.printf(({ timestamp, level, message, ...meta }) => {
+            const rest = Object.keys(meta).length > 0 ? ` ${JSON.stringify(meta)}` : "";
+            return `${timestamp} [${level}] [${config.serviceName}:${module}] ${message}${rest}`;
+        })
+    );
 
-    const date = new Date().toISOString().slice(0, 10)
-
-    const baseDir = path.join(
-        process.cwd(),
-        "logs",
-        date,
-        service
-    )
-
-    ensureDir(baseDir)
-
-    const filePath = path.join(baseDir, `${module}.log`)
-
-    const logger = winston.createLogger({
-
-        level: "info",
-
-        format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.json()
-        ),
-
-        transports: [
-
-            new winston.transports.Console({
-                format: winston.format.simple()
-            }),
-
-            new DailyRotateFile({
-                filename: filePath,
-                datePattern: "YYYY-MM-DD",
-                maxSize: "20m",
-                maxFiles: "14d"
-            })
-
-        ]
-
-    })
-
-    return logger
+    return winston.createLogger({
+        level: config.logLevel,
+        defaultMeta: {
+            service: config.serviceName,
+            module,
+            env: config.nodeEnv,
+        },
+        format: config.logPretty ? prettyFormat : jsonFormat,
+        transports: [new winston.transports.Console()],
+    });
 }

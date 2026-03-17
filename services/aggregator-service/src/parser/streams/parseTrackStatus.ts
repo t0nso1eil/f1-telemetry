@@ -1,27 +1,34 @@
-import { AggregatorDelta } from "../../domain/delta/agregatorDelta"
-import {parserLogger} from "../../logger/logger";
+import { AggregatorDelta } from "../../domain/delta/aggregatorDelta";
+
+function mapTrackStatus(status?: string) {
+    switch (String(status)) {
+        case "1":
+            return "all_clear" as const;
+        case "2":
+            return "yellow" as const;
+        case "3":
+            return "unknown" as const;
+        case "4":
+            return "safety_car" as const;
+        case "5":
+            return "red" as const;
+        case "6":
+            return "vsc" as const;
+        case "7":
+            return "vsc" as const;
+        default:
+            return "unknown" as const;
+    }
+}
 
 export function parseTrackStatus(data: any, timestamp: number): AggregatorDelta[] {
-
-    const statusMap: Record<string, any> = {
-        "1": "GREEN",
-        "2": "YELLOW",
-        "4": "SC",
-        "5": "RED"
-    }
-
-    parserLogger.debug({
-        message: "TrackStatus received",
-        trackStatus: Object.keys(data?.Lines || {}).length
-    })
-
     return [
         {
-            type: "TRACK_STATUS",
-            status: statusMap[data.Status] ?? "GREEN",
-            messageId: timestamp,
+            type: "TRACK_STATUS_UPDATE",
+            trackStatus: mapTrackStatus(data?.Status),
+            trackStatusMessage: data?.Message ?? null,
+            messageId: timestamp * 1000,
             timestamp
         }
-    ]
-
+    ];
 }

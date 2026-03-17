@@ -1,35 +1,30 @@
-import { KafkaProducer } from "./kafka/producer";
-import { F1SignalRClient } from "./f1/f1.client";
-import { F1Parser } from "./parser/f1.parser";
-import { TelemetryNormalizer } from "./normalizer/telemetry.normalizer";
+import { IngestionApp } from "./app/app";
+import { appLogger } from "./logger";
 
-async function main() {
+async function bootstrap(): Promise<void> {
+    const app = new IngestionApp();
 
-    const kafka = new KafkaProducer();
-    const f1 = new F1SignalRClient();
-    const parser = new F1Parser();
-    const normalizer = new TelemetryNormalizer();
+    const shutdown = async (signal: string) => {
+        appLogger.warn("Shutdown signal received", { signal });
 
-    await kafka.connect();
-
-    await f1.start(async (rawMessage) => {
-
-        const parsedEvents = parser.parse(rawMessage.data);
-
-        for (const event of parsedEvents) {
-
-            const normalized =
-                normalizer.normalize(event.stream, event.payload);
-
-            await kafka.publish(normalized);
-
-            console.log(
-                `📤 ${event.stream} published`
-            );
+        try {
+            await app.stop();
+            process.exit(0);
+        } catch (error) {
+            appLogger.error("Shutdown failed", { error });
+            process.exit(1);
         }
+    };
 
-    });
+    process.on("SIGINT", () => void shutdown("SIGINT"));
+    process.on("SIGTERM", () => void shutdown("SIGTERM"));
 
+    try {
+        await app.start();
+    } catch (error) {
+        appLogger.error("Application startup failed", { error });
+        process.exit(1);
+    }
 }
 
-main();
+void bootstrap();

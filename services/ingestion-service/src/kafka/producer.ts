@@ -1,43 +1,48 @@
 import { Kafka, Producer } from "kafkajs";
-import { config } from "../config";
+import { config } from "../config/config";
+import { kafkaLogger } from "../logger";
 
 export class KafkaProducer {
     private producer: Producer;
 
     constructor() {
         const kafka = new Kafka({
-            clientId: "ingestion-service",
-            brokers: [
-                "localhost:9092",
-                "localhost:9093",
-                "localhost:9094"
-            ]
-        })
+            clientId: config.kafka.clientId,
+            brokers: config.kafka.brokers,
+        });
 
         this.producer = kafka.producer({
-            //acks: -1,                 // acks=all
-            idempotent: true,         // защита от дублей
-            maxInFlightRequests: 5,   // безопасно для idempotent
+            idempotent: true,
+            maxInFlightRequests: 5,
             retry: {
-                retries: 10
-            }
+                retries: config.kafka.retries,
+            },
         });
     }
 
-    async connect() {
+    async connect(): Promise<void> {
         await this.producer.connect();
-        console.log("✅ Kafka connected");
+
+        kafkaLogger.info("Kafka producer connected", {
+            brokers: config.kafka.brokers,
+            clientId: config.kafka.clientId,
+        });
     }
 
-    async publish(message: unknown) {
+    async disconnect(): Promise<void> {
+        await this.producer.disconnect();
+        kafkaLogger.info("Kafka producer disconnected");
+    }
+
+    async publish(message: unknown): Promise<void> {
         await this.producer.send({
-            topic: config.kafka.topic,
+            topic: config.kafka.topicRaw,
             messages: [
                 {
                     key: Date.now().toString(),
-                    value: JSON.stringify(message)
-                }
-            ]
+                    value: JSON.stringify(message),
+                },
+            ],
         });
     }
 }

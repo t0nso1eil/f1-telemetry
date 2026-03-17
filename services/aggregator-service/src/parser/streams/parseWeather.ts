@@ -1,21 +1,26 @@
-import { AggregatorDelta } from "../../domain/delta/agregatorDelta"
-import {parserLogger} from "../../logger/logger";
+import { AggregatorDelta } from "../../domain/delta/aggregatorDelta";
+
+function toNumber(value: unknown): number | null | undefined {
+    if (value === undefined) return undefined;
+    if (value === null || value === "") return null;
+
+    const parsed = Number(value);
+    return Number.isNaN(parsed) ? undefined : parsed;
+}
 
 export function parseWeather(data: any, timestamp: number): AggregatorDelta[] {
-
-    parserLogger.debug({
-        message: "Weather received",
-        weather: Object.keys(data?.Lines || {}).length
-    })
-
     return [
         {
             type: "WEATHER_UPDATE",
-            airTemp: Number(data.AirTemp),
-            trackTemp: Number(data.TrackTemp),
-            messageId: timestamp,
+            airTempC: toNumber(data?.AirTemp),
+            trackTempC: toNumber(data?.TrackTemp),
+            humidityPct: toNumber(data?.Humidity),
+            pressureHpa: toNumber(data?.Pressure),
+            rainfall: toNumber(data?.Rainfall),
+            windDirectionDeg: toNumber(data?.WindDirection),
+            windSpeedMps: toNumber(data?.WindSpeed),
+            messageId: timestamp * 1000,
             timestamp
         }
-    ]
-
+    ];
 }

@@ -13,4 +13,5 @@ export const kafkaConfig = {
     },
 
     consumerGroup: "aggregator-group"
+    //consumerGroup: "aggregator-group-debug-1"
 }

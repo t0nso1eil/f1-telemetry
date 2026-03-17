@@ -1,32 +1,34 @@
-import { AggregatorDelta } from "../../domain/delta/agregatorDelta"
-import {parserLogger} from "../../logger/logger";
+import { AggregatorDelta } from "../../domain/delta/aggregatorDelta";
 
 export function parseDriverList(data: any, timestamp: number): AggregatorDelta[] {
+    const deltas: AggregatorDelta[] = [];
 
-    const deltas: AggregatorDelta[] = []
-
-    if (!data) return deltas
-
-    for (const driverId of Object.keys(data)) {
-
-        parserLogger.debug({
-            message: "DriverList received",
-            drivers: Object.keys(data?.Lines || {}).length
-        })
-
-        const driver = data[driverId]
-
-        deltas.push({
-            type: "DRIVER_REGISTER",
-            driverId,
-            number: driver.RacingNumber,
-            name: driver.FullName,
-            team: driver.TeamName,
-            messageId: timestamp,
-            timestamp
-        })
-
+    if (!data || typeof data !== "object") {
+        return deltas;
     }
 
-    return deltas
+    let seq = 0;
+
+    for (const driverId of Object.keys(data)) {
+        const driver = data[driverId];
+        if (!driver) continue;
+
+        deltas.push({
+            type: "DRIVER_UPSERT",
+            driverId,
+            racingNumber: String(driver.RacingNumber ?? driverId),
+            tla: driver.Tla ?? "",
+            broadcastName: driver.BroadcastName ?? null,
+            fullName: driver.FullName ?? "",
+            firstName: driver.FirstName ?? null,
+            lastName: driver.LastName ?? null,
+            teamName: driver.TeamName ?? "",
+            teamColor: driver.TeamColour ?? driver.TeamColor ?? null,
+            line: undefined,
+            messageId: timestamp * 1000 + seq++,
+            timestamp
+        });
+    }
+
+    return deltas;
 }
