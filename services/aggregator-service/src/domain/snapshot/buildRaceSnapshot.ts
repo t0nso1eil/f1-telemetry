@@ -1,6 +1,8 @@
 import { RaceState } from "../state/raceState";
 import { DriverState } from "../state/driver/driverState";
 import { RaceSnapshot } from "./raceSnapshot";
+import { snapshotLogger } from "../../logger";
+import { config } from "../../config/config"
 
 function toIso(value?: number): string | null {
     if (!value) return null;
@@ -20,7 +22,7 @@ function sortDrivers(drivers: DriverState[]): DriverState[] {
 export function buildRaceSnapshot(state: RaceState): RaceSnapshot {
     const drivers = sortDrivers([...state.drivers.values()]);
 
-    return {
+    const snapshot: RaceSnapshot = {
         schema_version: state.schemaVersion,
         session_key: state.sessionId,
         sequence: state.sequence,
@@ -71,4 +73,11 @@ export function buildRaceSnapshot(state: RaceState): RaceSnapshot {
             utc: toIso(item.utc)
         }))
     };
+
+    snapshotLogger.debug("Snapshot built", {
+        drivers: snapshot.drivers.length,
+        sequence: snapshot.sequence,
+    });
+
+    return snapshot;
 }

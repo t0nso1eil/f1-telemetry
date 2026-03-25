@@ -1,7 +1,8 @@
 import { Producer } from "kafkajs";
-import { kafkaConfig } from "./config";
+import { config } from "../config/config";
 import { RaceState } from "../domain/state/raceState";
 import { buildRaceSnapshot } from "../domain/snapshot/buildRaceSnapshot";
+import { snapshotLogger } from "../logger";
 
 export async function publishSnapshot(
     producer: Producer,
@@ -10,12 +11,16 @@ export async function publishSnapshot(
     const snapshot = buildRaceSnapshot(state);
 
     await producer.send({
-        topic: kafkaConfig.topics.snapshot,
+        topic: config.kafka.topicSnapshot,
         messages: [
             {
                 key: state.sessionId,
-                value: JSON.stringify(snapshot)
-            }
-        ]
+                value: JSON.stringify(snapshot),
+            },
+        ],
+    });
+
+    snapshotLogger.info("Snapshot published", {
+        drivers: state.drivers.size,
     });
 }

@@ -3,6 +3,7 @@ import { RaceState } from "./state/raceState";
 import { DriverState } from "./state/driver/driverState";
 import { RaceControlMessageState } from "./state/race/raceControlMessageState";
 import { TeamRadioState } from "./state/race/teamRadioState";
+import {aggregatorLogger} from "../logger";
 
 function cloneDriver(driver: DriverState): DriverState {
     return {
@@ -206,6 +207,11 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
     if (delta.messageId <= state.lastMessageId) {
         return state;
     }
+
+    aggregatorLogger.debug("Delta received", {
+        type: delta.type,
+        messageId: delta.messageId,
+    });
 
     let newState: RaceState = {
         ...state,

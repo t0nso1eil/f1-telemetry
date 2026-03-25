@@ -1,53 +1,56 @@
-import winston from "winston"
-import DailyRotateFile from "winston-daily-rotate-file"
-import path from "path"
-import fs from "fs"
+import winston from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
+import path from "path";
+import fs from "fs";
+import { config } from "../config/config";
 
-function ensureDir(dir: string) {
+function getLogDir() {
+    const date = new Date().toISOString().split("T")[0];
+    const dir = path.join(process.cwd(), "logs", date);
+
     if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true })
+        fs.mkdirSync(dir, { recursive: true });
     }
+
+    return dir;
 }
 
-export function createModuleLogger(service: string, module: string) {
+export function createModuleLogger(module: string) {
+    const logDir = getLogDir();
 
-    const date = new Date().toISOString().slice(0, 10)
+    const fileTransport = new DailyRotateFile({
+        dirname: logDir,
+        filename: `${module}-%DATE%.log`,
+        datePattern: "YYYY-MM-DD",
+        maxFiles: "7d",
+        zippedArchive: false,
+    });
 
-    const baseDir = path.join(
-        process.cwd(),
-        "logs",
-        service,
-        date
-    )
+    const consoleFormat = winston.format.combine(
+        winston.format.colorize(),
+        winston.format.timestamp(),
+        winston.format.printf(({ timestamp, level, message, ...meta }) => {
+            const rest = Object.keys(meta).length ? JSON.stringify(meta) : "";
+            return `${timestamp} [${level}] [${config.serviceName}:${module}] ${message} ${rest}`;
+        })
+    );
 
-    ensureDir(baseDir)
-
-    const filePath = path.join(baseDir, `${module}.log`)
+    const jsonFormat = winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.errors({ stack: true }),
+        winston.format.json()
+    );
 
     return winston.createLogger({
-
-        level: "debug",
-
-        format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.json()
-        ),
-
+        level: config.logLevel,
+        format: config.logPretty ? consoleFormat : jsonFormat,
         transports: [
-
-            new winston.transports.Console({
-                level: "debug",
-                format: winston.format.simple()
-            }),
-
-            new DailyRotateFile({
-                filename: filePath,
-                level: "debug",
-                maxSize: "50m",
-                maxFiles: "7d"
-            })
-
-        ]
-
-    })
+            new winston.transports.Console(),
+            fileTransport,
+        ],
+        defaultMeta: {
+            service: config.serviceName,
+            module,
+        },
+    });
 }

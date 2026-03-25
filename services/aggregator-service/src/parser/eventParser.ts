@@ -9,8 +9,7 @@ import { parseSessionInfo } from "./streams/parseSessionInfo";
 import { parseSessionStatus } from "./streams/parseSessionStatus";
 import { parseRaceControlMessages } from "./streams/parseRaceControlMessages";
 import { parseTeamRadio } from "./streams/parseTeamRadio";
-
-import { parserLogger, errorLogger } from "../logger/logger";
+import { parserLogger } from "../logger";
 
 export function parseNormalizedEvent(event: any): AggregatorDelta[] {
     const deltas: AggregatorDelta[] = [];
@@ -76,7 +75,7 @@ export function parseNormalizedEvent(event: any): AggregatorDelta[] {
                 return deltas;
         }
     } catch (err) {
-        errorLogger.error({
+        parserLogger.error({
             message: "parser error",
             stream,
             error: err
