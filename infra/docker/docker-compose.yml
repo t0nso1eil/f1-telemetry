@@ -160,5 +160,33 @@ services:
       echo 'Topics successfully created';
       "
 
+  aggregator-service:
+    build:
+      context: ../../services/aggregator-service
+      dockerfile: Dockerfile
+    container_name: f1-aggregator
+    env_file:
+       - ../../services/aggregator-service/.env
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  ingestion-service:
+    build:
+      context: ../../services/ingestion-service
+      dockerfile: Dockerfile
+    container_name: f1-ingestion
+    env_file:
+      - ../../services/ingestion-service/.env
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+    restart: unless-stopped
+
 volumes:
   pgdata:
