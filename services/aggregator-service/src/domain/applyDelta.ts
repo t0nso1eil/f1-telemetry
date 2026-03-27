@@ -452,23 +452,56 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
         case "DRIVER_SECTORS_UPDATE": {
             const driver = getOrCreateDriver(newState, delta.driverId);
 
+            const existingSectors = driver.timing.sectors;
+
+            const mergedSectors = delta.sectors.map((incomingSector) => {
+                const existingSector = existingSectors.find(
+                    (s) => s.sector === incomingSector.sector
+                );
+
+                // --- merge segments ---
+                const existingSegments = existingSector?.segments ?? [];
+
+                const mergedSegments = (() => {
+                    if (!incomingSector.segments) return existingSegments;
+
+                    const map = new Map<number, { segment: number; statusCode: number }>();
+
+                    // сначала кладём старые
+                    for (const seg of existingSegments) {
+                        map.set(seg.segment, seg);
+                    }
+
+                    // потом обновляем новыми
+                    for (const seg of incomingSector.segments) {
+                        map.set(seg.segment, {
+                            segment: seg.segment,
+                            statusCode: seg.statusCode
+                        });
+                    }
+
+                    return Array.from(map.values()).sort((a, b) => a.segment - b.segment);
+                })();
+
+                return {
+                    sector: incomingSector.sector,
+                    value: incomingSector.value ?? existingSector?.value ?? null,
+                    previousValue: incomingSector.previousValue ?? existingSector?.previousValue ?? null,
+                    stopped: incomingSector.stopped ?? existingSector?.stopped ?? false,
+                    statusCode: incomingSector.statusCode ?? existingSector?.statusCode ?? null,
+                    personalFastest:
+                        incomingSector.personalFastest ?? existingSector?.personalFastest ?? null,
+                    overallFastest:
+                        incomingSector.overallFastest ?? existingSector?.overallFastest ?? null,
+                    segments: mergedSegments
+                };
+            });
+
             const updated: DriverState = {
                 ...driver,
                 timing: {
                     ...driver.timing,
-                    sectors: delta.sectors.map((sector) => ({
-                        sector: sector.sector,
-                        value: sector.value ?? null,
-                        previousValue: sector.previousValue ?? null,
-                        stopped: sector.stopped ?? false,
-                        statusCode: sector.statusCode ?? null,
-                        personalFastest: sector.personalFastest ?? null,
-                        overallFastest: sector.overallFastest ?? null,
-                        segments: (sector.segments ?? []).map((segment) => ({
-                            segment: segment.segment,
-                            statusCode: segment.statusCode
-                        }))
-                    }))
+                    sectors: mergedSectors
                 }
             };
 
