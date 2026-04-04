@@ -7,22 +7,12 @@ import { setLatestSnapshot, getLatestSnapshot } from "../kafka/liveBuffer";
 import { pushSnapshot } from "../cache/snapshotCache";
 import { saveSnapshot } from "../db/snapshotRepository";
 import { createWSServer } from "../transport/wsServer";
-import { WebSocketServer } from "ws";
-
-function broadcast(wss: WebSocketServer, data: any) {
-    const message = JSON.stringify(data);
-
-    wss.clients.forEach((client: any) => {
-        if (client.readyState === 1) {
-            client.send(message);
-        }
-    });
-}
+import {broadcastSnapshots} from "../transport/snapshotBroadcaster";
 
 async function start() {
     const consumer = createKafkaConsumer();
 
-    const wss = createWSServer(3000);
+    const wss = createWSServer();
 
     await consumer.connect();
 
@@ -33,7 +23,6 @@ async function start() {
 
     console.log("🚀 Gateway started. Waiting for snapshots...");
 
-    // ✅ один interval, а не на каждое сообщение
     setInterval(() => {
         const snap = getLatestSnapshot();
 
@@ -55,16 +44,13 @@ async function start() {
                     "timestamp:", snapshot.timestamp
                 );
 
-                // 1. memory (live)
                 setLatestSnapshot(snapshot);
 
-                // 2. redis
                 await pushSnapshot(snapshot);
 
-                // 3. postgres
                 await saveSnapshot(snapshot);
 
-                broadcast(wss, snapshot);
+                await broadcastSnapshots();
 
             } catch (err) {
                 console.error("❌ parse error", err);

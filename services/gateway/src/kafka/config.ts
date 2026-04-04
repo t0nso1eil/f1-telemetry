@@ -1,15 +1,10 @@
+import { env } from "../config/env";
+
 export const kafkaConfig = {
-    clientId: "gateway-service",
-
-    brokers: [
-        "localhost:9092",
-        "localhost:9093",
-        "localhost:9094"
-    ],
-
+    clientId: env.kafka.clientId,
+    brokers: env.kafka.brokers,
     topics: {
         snapshot: "telemetry.snapshot"
     },
-
-    consumerGroup: "gateway-group"
-}
+    consumerGroup: env.kafka.groupId
+};
