@@ -1,11 +1,18 @@
+import {IdentitySource} from "../../meta/identitySource";
+
 export interface DriverIdentityState {
-    tla: string;
+    tla: string | null;
     broadcastName?: string | null;
 
-    fullName: string;
+    fullName: string | null;
     firstName?: string | null;
     lastName?: string | null;
 
-    teamName: string;
+    teamName: string | null;
     teamColor?: string | null;
+
+    meta: {
+        source: IdentitySource;
+        updatedAt: number;
+    };
 }

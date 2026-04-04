@@ -20,6 +20,9 @@ function mapSessionType(value?: string) {
 }
 
 export function parseSessionInfo(data: any, timestamp: number): AggregatorDelta[] {
+    const qualifyingPartFromSeries = extractLatestQualifyingPart(
+        data?.SessionData?.Series
+    );
     return [
         {
             type: "SESSION_INFO_UPDATE",
@@ -36,7 +39,9 @@ export function parseSessionInfo(data: any, timestamp: number): AggregatorDelta[
             sessionName: data?.Name ?? "",
             sessionNumber: data?.Number != null ? Number(data.Number) : null,
             sessionPart: data?.SessionPart != null ? Number(data.SessionPart) : null,
-            qualifyingPart: data?.QualifyingPart != null ? Number(data.QualifyingPart) : null,
+            qualifyingPart:
+                qualifyingPartFromSeries ??
+                (data?.QualifyingPart != null ? Number(data.QualifyingPart) : null),
             startTime: toEpochMs(data?.StartDate),
             endTime: toEpochMs(data?.EndDate),
             gmtOffset: data?.GmtOffset ?? null,
@@ -44,4 +49,18 @@ export function parseSessionInfo(data: any, timestamp: number): AggregatorDelta[
             timestamp
         }
     ];
+}
+
+function extractLatestQualifyingPart(series?: any[]): number | null | undefined {
+    if (!Array.isArray(series) || series.length === 0) {
+        return undefined;
+    }
+
+    const latest = series
+        .filter(item => item?.QualifyingPart !== undefined)
+        .sort((a, b) => Date.parse(b.Utc) - Date.parse(a.Utc))[0];
+
+    if (!latest) return undefined;
+
+    return latest.QualifyingPart ?? null;
 }

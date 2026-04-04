@@ -3,7 +3,9 @@ import { RaceState } from "./state/raceState";
 import { DriverState } from "./state/driver/driverState";
 import { RaceControlMessageState } from "./state/race/raceControlMessageState";
 import { TeamRadioState } from "./state/race/teamRadioState";
-import {aggregatorLogger} from "../logger";
+import { aggregatorLogger } from "../logger";
+import { mergeIdentity } from "./state/mergeIdentityState";
+
 
 function cloneDriver(driver: DriverState): DriverState {
     return {
@@ -62,13 +64,17 @@ function createInitialDriverState(params: {
         position: null,
         showPosition: true,
         identity: {
-            tla: params.tla ?? "",
+            tla: params.tla ?? null,
             broadcastName: params.broadcastName ?? null,
-            fullName: params.fullName ?? "",
+            fullName: params.fullName ?? null,
             firstName: params.firstName ?? null,
             lastName: params.lastName ?? null,
-            teamName: params.teamName ?? "",
-            teamColor: params.teamColor ?? null
+            teamName: params.teamName ?? null,
+            teamColor: params.teamColor ?? null,
+            meta: {
+                source: "FALLBACK",
+                updatedAt: Date.now()
+            }
         },
         timing: {
             numberOfLaps: null,
@@ -353,15 +359,20 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
                 ...driver,
                 racingNumber: delta.racingNumber ?? driver.racingNumber,
                 line: delta.line ?? driver.line,
-                identity: mergeDefined(driver.identity, {
-                    tla: delta.tla,
-                    broadcastName: delta.broadcastName,
-                    fullName: delta.fullName,
-                    firstName: delta.firstName,
-                    lastName: delta.lastName,
-                    teamName: delta.teamName,
-                    teamColor: delta.teamColor
-                })
+                identity: mergeIdentity(
+                    driver.identity,
+                    {
+                        tla: delta.tla,
+                        broadcastName: delta.broadcastName,
+                        fullName: delta.fullName,
+                        firstName: delta.firstName,
+                        lastName: delta.lastName,
+                        teamName: delta.teamName,
+                        teamColor: delta.teamColor
+                    },
+                    "DRIVER_LIST",
+                    delta.timestamp
+                )
             };
 
             newState.drivers.set(delta.driverId, updated);

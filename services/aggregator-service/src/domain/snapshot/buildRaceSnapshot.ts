@@ -2,7 +2,7 @@ import { RaceState } from "../state/raceState";
 import { DriverState } from "../state/driver/driverState";
 import { RaceSnapshot } from "./raceSnapshot";
 import { snapshotLogger } from "../../logger";
-import { config } from "../../config/config"
+import { applyDriverFallback } from "../state/applyDriverFallback";
 
 function toIso(value?: number): string | null {
     if (!value) return null;
@@ -20,7 +20,8 @@ function sortDrivers(drivers: DriverState[]): DriverState[] {
 }
 
 export function buildRaceSnapshot(state: RaceState): RaceSnapshot {
-    const drivers = sortDrivers([...state.drivers.values()]);
+    const patchedState = applyDriverFallback(state);
+    const drivers = sortDrivers([...patchedState.drivers.values()]);
 
     const snapshot: RaceSnapshot = {
         schema_version: state.schemaVersion,
