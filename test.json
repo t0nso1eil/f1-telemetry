@@ -1,0 +1,1862 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "snapshot_11249_0001_20260328T061253Z",
+  "session_key": "11249",
+  "sequence": 1,
+  "generated_at": "2026-03-28T06:12:59.427Z",
+  "source_timestamp": "2026-03-28T06:12:53.586Z",
+  "interval_ms": 2000,
+  "session": {
+    "meeting_key": 1281,
+    "session_key": 11249,
+    "grand_prix_name": "Japanese Grand Prix",
+    "official_name": "FORMULA 1 ARAMCO JAPANESE GRAND PRIX 2026",
+    "location": "Suzuka",
+    "country_code": "JPN",
+    "country_name": "Japan",
+    "circuit_short_name": "Suzuka",
+    "session_type": "qualifying",
+    "session_name": "Qualifying",
+    "session_number": null,
+    "qualifying_part": 1,
+    "session_part": null,
+    "start_time": "2026-03-28T15:00:00.000Z",
+    "end_time": "2026-03-28T16:00:00.000Z",
+    "gmt_offset": "09:00:00"
+  },
+  "race_state": {
+    "session_status": "started",
+    "track_status": "all_clear",
+    "track_status_message": "AllClear",
+    "clock": {
+      "utc": "2026-03-28T06:12:53.586Z",
+      "remaining_ms": 918000,
+      "extrapolating": true
+    },
+    "leader_racing_number": "81",
+    "total_cars": 22,
+    "classified_cars": 22
+  },
+  "weather": {
+    "air_temp_c": 16.6,
+    "track_temp_c": 31.5,
+    "humidity_pct": 53.3,
+    "pressure_hpa": 1008.7,
+    "rainfall": 0,
+    "wind_direction_deg": 125,
+    "wind_speed_mps": 0.9
+  },
+  "drivers": [
+    {
+      "racing_number": "16",
+      "line": 1,
+      "position": 1,
+      "show_position": true,
+      "identity": {
+        "tla": "LEC",
+        "broadcast_name": "C LECLERC",
+        "full_name": "Charles LECLERC",
+        "first_name": "Charles",
+        "last_name": "Leclerc",
+        "team_name": "Ferrari",
+        "team_color": "ED1131"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": null,
+        "interval_to_ahead": null,
+        "best_lap": {
+          "value": "1:30.078",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": true
+        },
+        "last_lap": {
+          "value": "1:30.078",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": true
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.668",
+            "stopped": false,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 281, "personal_fastest": true, "overall_fastest": true },
+          "i2": { "value": 331, "personal_fastest": true, "overall_fastest": true },
+          "fl": { "value": 250, "personal_fastest": false },
+          "st": { "value": 285, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:30.078",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "81",
+      "line": 2,
+      "position": 2,
+      "show_position": true,
+      "identity": {
+        "tla": "PIA",
+        "broadcast_name": "O PIASTRI",
+        "full_name": "Oscar PIASTRI",
+        "first_name": "Oscar",
+        "last_name": "Piastri",
+        "team_name": "McLaren",
+        "team_color": "F47600"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+0.360",
+        "interval_to_ahead": "+0.360",
+        "best_lap": {
+          "value": "1:30.438",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:30.438",
+          "lap": 2,
+          "overall_fastest": false,
+          "personal_fastest": true
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.862",
+            "stopped": false,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 276, "personal_fastest": true },
+          "i2": { "value": 323, "personal_fastest": true },
+          "fl": { "value": 260, "personal_fastest": false },
+          "st": { "value": 281, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:30.438",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "44",
+      "line": 3,
+      "position": 3,
+      "show_position": true,
+      "identity": {
+        "tla": "HAM",
+        "broadcast_name": "L HAMILTON",
+        "full_name": "Lewis HAMILTON",
+        "first_name": "Lewis",
+        "last_name": "Hamilton",
+        "team_name": "Ferrari",
+        "team_color": "ED1131"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+0.550",
+        "interval_to_ahead": "+0.190",
+        "best_lap": {
+          "value": "1:30.628",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:30.628",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.880",
+            "stopped": false,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 280, "personal_fastest": true },
+          "i2": { "value": 328, "personal_fastest": true },
+          "fl": { "value": 257, "personal_fastest": false },
+          "st": { "value": 282, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:30.628",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "1",
+      "line": 4,
+      "position": 4,
+      "show_position": true,
+      "identity": {
+        "tla": "NOR",
+        "broadcast_name": "L NORRIS",
+        "full_name": "Lando NORRIS",
+        "first_name": "Lando",
+        "last_name": "Norris",
+        "team_name": "McLaren",
+        "team_color": "F47600"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+0.598",
+        "interval_to_ahead": "+0.048",
+        "best_lap": {
+          "value": "1:30.676",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:30.676",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.863",
+            "stopped": false,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 272, "personal_fastest": true },
+          "i2": { "value": 324, "personal_fastest": true },
+          "fl": { "value": 259, "personal_fastest": true },
+          "st": { "value": 279, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:30.676",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "31",
+      "line": 5,
+      "position": 5,
+      "show_position": true,
+      "identity": {
+        "tla": "OCO",
+        "broadcast_name": "E OCON",
+        "full_name": "Esteban OCON",
+        "first_name": "Esteban",
+        "last_name": "Ocon",
+        "team_name": "Haas F1 Team",
+        "team_color": "9C9FA2"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+1.028",
+        "interval_to_ahead": "+0.430",
+        "best_lap": {
+          "value": "1:31.466",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:31.466",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": "40.473",
+            "stopped": false,
+            "personal_fastest": true,
+            "overall_fastest": true,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.869",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 280, "personal_fastest": true, "overall_fastest": true },
+          "i2": { "value": 327, "personal_fastest": true },
+          "fl": { "value": 257, "personal_fastest": false },
+          "st": { "value": 282, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:31.466",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "41",
+      "line": 6,
+      "position": 6,
+      "show_position": true,
+      "identity": {
+        "tla": "LIN",
+        "broadcast_name": "A LINDBLAD",
+        "full_name": "Arvid LINDBLAD",
+        "first_name": "Arvid",
+        "last_name": "Lindblad",
+        "team_name": "Racing Bulls",
+        "team_color": "6C98FF"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+1.196",
+        "interval_to_ahead": "+0.168",
+        "best_lap": {
+          "value": "1:31.634",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:31.634",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.671",
+            "stopped": false,
+            "personal_fastest": true,
+            "overall_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 268, "personal_fastest": true, "overall_fastest": false },
+          "i2": { "value": 335, "personal_fastest": true, "overall_fastest": true },
+          "fl": { "value": 261, "personal_fastest": false },
+          "st": { "value": 287, "personal_fastest": true, "overall_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:31.634",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "30",
+      "line": 7,
+      "position": 7,
+      "show_position": true,
+      "identity": {
+        "tla": "LAW",
+        "broadcast_name": "L LAWSON",
+        "full_name": "Liam LAWSON",
+        "first_name": "Liam",
+        "last_name": "Lawson",
+        "team_name": "Racing Bulls",
+        "team_color": "6C98FF"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+1.347",
+        "interval_to_ahead": "+0.151",
+        "best_lap": {
+          "value": "1:31.785",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:31.785",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": "40.697",
+            "stopped": false,
+            "personal_fastest": true,
+            "overall_fastest": true,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.831",
+            "stopped": false,
+            "personal_fastest": true,
+            "overall_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 275, "personal_fastest": true, "overall_fastest": true },
+          "i2": { "value": 330, "personal_fastest": true, "overall_fastest": true },
+          "fl": { "value": 258, "personal_fastest": false },
+          "st": { "value": 282, "personal_fastest": true, "overall_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:31.785",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "5",
+      "line": 8,
+      "position": 8,
+      "show_position": true,
+      "identity": {
+        "tla": "BOR",
+        "broadcast_name": "G BORTOLETO",
+        "full_name": "Gabriel BORTOLETO",
+        "first_name": "Gabriel",
+        "last_name": "Bortoleto",
+        "team_name": "Audi",
+        "team_color": "F50537"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+1.417",
+        "interval_to_ahead": "+0.070",
+        "best_lap": {
+          "value": "1:31.855",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:31.855",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": "40.771",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.826",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 278, "personal_fastest": true },
+          "i2": { "value": 333, "personal_fastest": true },
+          "fl": { "value": 259, "personal_fastest": false },
+          "st": { "value": 286, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:31.855",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "55",
+      "line": 9,
+      "position": 9,
+      "show_position": true,
+      "identity": {
+        "tla": "SAI",
+        "broadcast_name": "C SAINZ",
+        "full_name": "Carlos SAINZ",
+        "first_name": "Carlos",
+        "last_name": "Sainz",
+        "team_name": "Williams",
+        "team_color": "1868DB"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+1.820",
+        "interval_to_ahead": "+0.403",
+        "best_lap": {
+          "value": "1:31.855",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:31.855",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.826",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 277, "personal_fastest": true },
+          "i2": { "value": 338, "personal_fastest": true, "overall_fastest": true },
+          "fl": { "value": 259, "personal_fastest": false },
+          "st": { "value": 286, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:31.855",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "87",
+      "line": 10,
+      "position": 10,
+      "show_position": true,
+      "identity": {
+        "tla": "BEA",
+        "broadcast_name": "O BEARMAN",
+        "full_name": "Oliver BEARMAN",
+        "first_name": "Oliver",
+        "last_name": "Bearman",
+        "team_name": "Haas F1 Team",
+        "team_color": "9C9FA2"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+1.981",
+        "interval_to_ahead": "+0.161",
+        "best_lap": {
+          "value": "1:32.016",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:32.016",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": "40.898",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.886",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 275, "personal_fastest": true },
+          "i2": { "value": 326, "personal_fastest": true },
+          "fl": { "value": 266, "personal_fastest": true },
+          "st": { "value": 278, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:32.016",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "27",
+      "line": 11,
+      "position": 11,
+      "show_position": true,
+      "identity": {
+        "tla": "HUL",
+        "broadcast_name": "N HULKENBERG",
+        "full_name": "Nico HULKENBERG",
+        "first_name": "Nico",
+        "last_name": "Hulkenberg",
+        "team_name": "Audi",
+        "team_color": "F50537"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+1.938",
+        "interval_to_ahead": "-0.043",
+        "best_lap": {
+          "value": "1:32.016",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:32.016",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.886",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 267, "personal_fastest": true },
+          "i2": { "value": 329, "personal_fastest": true },
+          "fl": { "value": 266, "personal_fastest": true },
+          "st": { "value": 285, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:32.016",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "23",
+      "line": 12,
+      "position": 12,
+      "show_position": true,
+      "identity": {
+        "tla": "ALB",
+        "broadcast_name": "A ALBON",
+        "full_name": "Alexander ALBON",
+        "first_name": "Alexander",
+        "last_name": "Albon",
+        "team_name": "Williams",
+        "team_color": "1868DB"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+1.741",
+        "interval_to_ahead": "-0.197",
+        "best_lap": {
+          "value": "1:31.776",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:31.776",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.851",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 277, "personal_fastest": true },
+          "i2": { "value": 329, "personal_fastest": true },
+          "fl": { "value": 263, "personal_fastest": true },
+          "st": { "value": 285, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:31.776",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "11",
+      "line": 13,
+      "position": 13,
+      "show_position": true,
+      "identity": {
+        "tla": "PER",
+        "broadcast_name": "S PEREZ",
+        "full_name": "Sergio PEREZ",
+        "first_name": "Sergio",
+        "last_name": "Perez",
+        "team_name": "Cadillac",
+        "team_color": "909090"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+2.753",
+        "interval_to_ahead": "+1.012",
+        "best_lap": {
+          "value": "1:32.788",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:32.788",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "18.164",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 277, "personal_fastest": true },
+          "i2": { "value": 265, "personal_fastest": true },
+          "fl": { "value": 256, "personal_fastest": true },
+          "st": { "value": 277, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:32.788",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "63",
+      "line": 14,
+      "position": 14,
+      "show_position": true,
+      "identity": {
+        "tla": "RUS",
+        "broadcast_name": "G RUSSELL",
+        "full_name": "George RUSSELL",
+        "first_name": "George",
+        "last_name": "Russell",
+        "team_name": "Mercedes",
+        "team_color": "00D7B6"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+1.423",
+        "interval_to_ahead": "-1.330",
+        "best_lap": {
+          "value": "1:31.458",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:31.458",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": "40.574",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.857",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 274, "personal_fastest": true },
+          "i2": { "value": 325, "personal_fastest": true },
+          "fl": { "value": 268, "personal_fastest": true },
+          "st": { "value": 281, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:31.458",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "3",
+      "line": 15,
+      "position": 15,
+      "show_position": true,
+      "identity": {
+        "tla": "VER",
+        "broadcast_name": "M VERSTAPPEN",
+        "full_name": "Max VERSTAPPEN",
+        "first_name": "Max",
+        "last_name": "Verstappen",
+        "team_name": "Red Bull Racing",
+        "team_color": "4781D7"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+2.942",
+        "interval_to_ahead": "+1.519",
+        "best_lap": {
+          "value": "1:34.408",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:34.408",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "18.218",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 276, "personal_fastest": true },
+          "i2": { "value": 336, "personal_fastest": true, "overall_fastest": true },
+          "fl": { "value": 259, "personal_fastest": true },
+          "st": { "value": 286, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:34.408",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "14",
+      "line": 16,
+      "position": 16,
+      "show_position": true,
+      "identity": {
+        "tla": "ALO",
+        "broadcast_name": "F ALONSO",
+        "full_name": "Fernando ALONSO",
+        "first_name": "Fernando",
+        "last_name": "Alonso",
+        "team_name": "Aston Martin",
+        "team_color": "229971"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+3.408",
+        "interval_to_ahead": "+0.466",
+        "best_lap": {
+          "value": "1:33.846",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:33.846",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "18.103",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 268, "personal_fastest": true },
+          "i2": { "value": 329, "personal_fastest": true },
+          "fl": { "value": 249, "personal_fastest": false },
+          "st": { "value": 282, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:33.846",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "18",
+      "line": 17,
+      "position": 17,
+      "show_position": true,
+      "identity": {
+        "tla": "STR",
+        "broadcast_name": "L STROLL",
+        "full_name": "Lance STROLL",
+        "first_name": "Lance",
+        "last_name": "Stroll",
+        "team_name": "Aston Martin",
+        "team_color": "229971"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+3.970",
+        "interval_to_ahead": "+0.562",
+        "best_lap": {
+          "value": "1:34.408",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:34.408",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "18.218",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 267, "personal_fastest": true },
+          "i2": { "value": 323, "personal_fastest": true },
+          "fl": { "value": 259, "personal_fastest": true },
+          "st": { "value": 275, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:34.408",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "77",
+      "line": 18,
+      "position": 18,
+      "show_position": true,
+      "identity": {
+        "tla": "BOT",
+        "broadcast_name": "V BOTTAS",
+        "full_name": "Valtteri BOTTAS",
+        "first_name": "Valtteri",
+        "last_name": "Bottas",
+        "team_name": "Cadillac",
+        "team_color": "909090"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+2.590",
+        "interval_to_ahead": "-1.380",
+        "best_lap": {
+          "value": "1:33.028",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:33.028",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.977",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 278, "personal_fastest": true },
+          "i2": { "value": 330, "personal_fastest": true },
+          "fl": { "value": 270, "personal_fastest": true, "overall_fastest": true },
+          "st": { "value": 286, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:33.028",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "43",
+      "line": 19,
+      "position": 19,
+      "show_position": true,
+      "identity": {
+        "tla": "COL",
+        "broadcast_name": "F COLAPINTO",
+        "full_name": "Franco COLAPINTO",
+        "first_name": "Franco",
+        "last_name": "Colapinto",
+        "team_name": "Alpine",
+        "team_color": "00A1E8"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+1.423",
+        "interval_to_ahead": "-1.167",
+        "best_lap": {
+          "value": "1:31.458",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:31.458",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.857",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 266, "personal_fastest": true },
+          "i2": { "value": 255, "personal_fastest": true },
+          "fl": { "value": 268, "personal_fastest": true },
+          "st": { "value": 248, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:31.458",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "12",
+      "line": 20,
+      "position": 20,
+      "show_position": true,
+      "identity": {
+        "tla": "ANT",
+        "broadcast_name": "K ANTONELLI",
+        "full_name": "Kimi ANTONELLI",
+        "first_name": "Kimi",
+        "last_name": "Antonelli",
+        "team_name": "Mercedes",
+        "team_color": "00D7B6"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+0.593",
+        "interval_to_ahead": "-0.005",
+        "best_lap": {
+          "value": "1:30.628",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:30.628",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.880",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 280, "personal_fastest": true },
+          "i2": { "value": 326, "personal_fastest": true },
+          "fl": { "value": 257, "personal_fastest": false },
+          "st": { "value": 280, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:30.628",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "6",
+      "line": 21,
+      "position": 21,
+      "show_position": true,
+      "identity": {
+        "tla": "HAD",
+        "broadcast_name": "I HADJAR",
+        "full_name": "Isack HADJAR",
+        "first_name": "Isack",
+        "last_name": "Hadjar",
+        "team_name": "Red Bull Racing",
+        "team_color": "4781D7"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+2.350",
+        "interval_to_ahead": "+1.757",
+        "best_lap": {
+          "value": "1:32.788",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:32.788",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "18.164",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 278, "personal_fastest": true },
+          "i2": { "value": 338, "personal_fastest": true, "overall_fastest": true },
+          "fl": { "value": 267, "personal_fastest": true },
+          "st": { "value": 289, "personal_fastest": true, "overall_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:32.788",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    },
+    {
+      "racing_number": "10",
+      "line": 22,
+      "position": 22,
+      "show_position": true,
+      "identity": {
+        "tla": "GAS",
+        "broadcast_name": "P GASLY",
+        "full_name": "Pierre GASLY",
+        "first_name": "Pierre",
+        "last_name": "Gasly",
+        "team_name": "Alpine",
+        "team_color": "00A1E8"
+      },
+      "timing": {
+        "number_of_laps": 3,
+        "gap_to_leader": "+2.993",
+        "interval_to_ahead": "+0.643",
+        "best_lap": {
+          "value": "1:33.028",
+          "lap": 2,
+          "personal_fastest": true
+        },
+        "last_lap": {
+          "value": "1:33.028",
+          "lap": 2,
+          "personal_fastest": true,
+          "overall_fastest": false
+        },
+        "sectors": [
+          {
+            "sector": 1,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 2,
+            "value": null,
+            "stopped": false,
+            "segments": []
+          },
+          {
+            "sector": 3,
+            "value": "17.977",
+            "stopped": false,
+            "personal_fastest": true,
+            "segments": []
+          }
+        ],
+        "speeds": {
+          "i1": { "value": 260, "personal_fastest": true },
+          "i2": { "value": 271, "personal_fastest": true },
+          "fl": { "value": 271, "personal_fastest": true, "overall_fastest": true },
+          "st": { "value": 265, "personal_fastest": true }
+        }
+      },
+      "tyres": {
+        "current_compound": "unknown",
+        "is_new": true,
+        "tyre_age_laps": 2,
+        "stints": [
+          {
+            "index": 0,
+            "compound": "unknown",
+            "is_new": true,
+            "total_laps": 2,
+            "start_laps": 0,
+            "reference_lap_time": "1:33.028",
+            "reference_lap_number": 3
+          }
+        ]
+      },
+      "track": {
+        "in_pit": false,
+        "pit_out": false,
+        "stopped": false,
+        "retired": false,
+        "status_code": 64
+      }
+    }
+  ],
+  "race_control_messages": [
+    {
+      "id": "1774677600000|Flag|GREEN LIGHT - PIT EXIT OPEN|GREEN|Track|",
+      "utc": "2026-03-28T06:00:00.000Z",
+      "category": "flag",
+      "message": "GREEN LIGHT - PIT EXIT OPEN",
+      "flag": "green",
+      "scope": "track",
+      "sector": null,
+      "mode": "green"
+    },
+    {
+      "id": "1774592487000|Other|FIA STEWARDS: TURN 15 INCIDENT INVOLVING CARS 43 (COL) AND 3 (VER) WILL BE INVESTIGATED AFTER THE SESSION - DRIVING ERRATICALLY|||",
+      "utc": "2026-03-27T06:21:27.000Z",
+      "category": "other",
+      "message": "FIA STEWARDS: TURN 15 INCIDENT INVOLVING CARS 43 (COL) AND 3 (VER) WILL BE INVESTIGATED AFTER THE SESSION - DRIVING ERRATICALLY",
+      "flag": null,
+      "scope": null,
+      "sector": null,
+      "mode": null
+    }
+  ],
+  "team_radio": []
+}
