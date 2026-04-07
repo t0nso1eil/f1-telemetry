@@ -41,7 +41,7 @@ async function start() {
                 console.log(
                     "📡 snapshot received",
                     "drivers:", snapshot.drivers?.length || 0,
-                    "timestamp:", snapshot.timestamp
+                    "timestamp:", snapshot.generated_at
                 );
 
                 setLatestSnapshot(snapshot);

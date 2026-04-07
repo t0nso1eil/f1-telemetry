@@ -6,8 +6,13 @@ export async function saveSnapshot(snapshot: any) {
         VALUES ($1, $2)
     `;
 
+    const createdAt =
+        snapshot.generated_at
+            ? new Date(snapshot.generated_at)
+            : new Date();
+
     await pg.query(query, [
-        new Date(snapshot.timestamp),
+        createdAt,
         snapshot
     ]);
 }
