@@ -7,7 +7,7 @@ import { setLatestSnapshot, getLatestSnapshot } from "../kafka/liveBuffer";
 import { pushSnapshot } from "../cache/snapshotCache";
 import { saveSnapshot } from "../db/snapshotRepository";
 import { createWSServer } from "../transport/wsServer";
-import {broadcastSnapshots} from "../transport/snapshotBroadcaster";
+import { broadcastSnapshots } from "../transport/snapshotBroadcaster";
 
 async function start() {
     const consumer = createKafkaConsumer();

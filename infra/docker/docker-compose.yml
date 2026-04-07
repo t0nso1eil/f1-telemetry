@@ -188,5 +188,21 @@ services:
       - kafka-3
     restart: unless-stopped
 
+  gateway-service:
+    build:
+      context: ../../services/gateway
+      dockerfile: Dockerfile
+    container_name: f1-gateway
+    env_file:
+      - ../../services/gateway/.env
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - redis
+      - postgres
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
 volumes:
   pgdata:
