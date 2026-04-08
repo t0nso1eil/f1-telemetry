@@ -5,7 +5,10 @@ import { getSnapshotByDelay as getFromDb } from "../db/snapshotRepository";
 
 export class SnapshotService {
 
-    async getSnapshot(delaySeconds: number) {
+    async getSnapshotByTime(targetTime: number) {
+        const now = Date.now();
+        const delaySeconds = (now - targetTime) / 1000;
+
         const source = resolveSource(delaySeconds);
 
         switch (source) {

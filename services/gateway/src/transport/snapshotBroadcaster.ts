@@ -10,10 +10,12 @@ export async function broadcastSnapshots() {
         if (client.readyState !== 1) continue;
 
         try {
-            const snap = await snapshotService.getSnapshot(state.delaySeconds);
+            const snap = await snapshotService.getSnapshotByTime(state.cursorTime);
 
             if (snap) {
                 client.send(JSON.stringify(snap));
+
+                state.cursorTime += 2000; // interval_ms
             }
 
         } catch (err) {

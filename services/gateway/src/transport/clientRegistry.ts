@@ -2,13 +2,17 @@ import { WebSocket } from "ws";
 
 export type ClientState = {
     delaySeconds: number;
+    cursorTime: number; // чтобы двигаться по времени
 };
 
 const clients = new Map<WebSocket, ClientState>();
 
 export function addClient(ws: WebSocket) {
+    const now = Date.now();
+
     clients.set(ws, {
-        delaySeconds: 0 // по умолчанию realtime
+        delaySeconds: 0,
+        cursorTime: now
     });
 }
 
@@ -25,4 +29,6 @@ export function setClientDelay(ws: WebSocket, delay: number) {
     if (!state) return;
 
     state.delaySeconds = delay;
+
+    state.cursorTime = Date.now() - delay * 1000;
 }
