@@ -11,6 +11,8 @@ export class SnapshotService {
 
         const source = resolveSource(delaySeconds);
 
+        console.log("using snapshot source", source);
+
         switch (source) {
             case "live":
                 return getLatestSnapshot();
