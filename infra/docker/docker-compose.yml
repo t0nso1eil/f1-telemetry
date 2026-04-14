@@ -222,5 +222,16 @@ services:
     ports:
       - "3000:3000"
     restart: unless-stopped
+
+  mock-ingestion-service:
+    build:
+      context: ../../services/mock-ingestion-service
+    environment:
+      - KAFKA_BROKERS=kafka-1:29092,kafka-2:29093,kafka-3:29094
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+
 volumes:
   pgdata:

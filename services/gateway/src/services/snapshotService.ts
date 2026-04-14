@@ -1,21 +1,17 @@
 import { resolveSource } from "../routing/snapshotRouter";
-import { getLatestSnapshot } from "../kafka/liveBuffer";
 import { getSnapshotByDelay as getFromRedis } from "../cache/snapshotCache";
 import { getSnapshotByDelay as getFromDb } from "../db/snapshotRepository";
 
 export class SnapshotService {
 
-    async getSnapshotByTime(targetTime: number) {
-        const now = Date.now();
-        const delaySeconds = (now - targetTime) / 1000;
-
+    async getSnapshotForClient(delaySeconds: number, liveSnapshot: any) {
         const source = resolveSource(delaySeconds);
 
         console.log("using snapshot source", source);
 
         switch (source) {
             case "live":
-                return getLatestSnapshot();
+                return liveSnapshot;
 
             case "redis":
                 return await getFromRedis(delaySeconds);

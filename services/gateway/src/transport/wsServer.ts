@@ -9,7 +9,7 @@ export function createWSServer() {
     });
 
     wss.on("connection", (ws: WebSocket) => {
-        console.log("🔌 client connected");
+        console.log("client connected");
 
         addClient(ws);
 
@@ -24,21 +24,21 @@ export function createWSServer() {
 
                 if (msg.type === "set_delay") {
                     setClientDelay(ws, msg.delay);
-                    console.log("⏱ delay set:", msg.delay);
+                    console.log("delay set:", msg.delay);
                 }
 
             } catch (err) {
-                console.error("❌ ws message error", err);
+                console.error("ws message error", err);
             }
         });
 
         ws.on("close", () => {
-            console.log("❌ client disconnected");
+            console.log("client disconnected");
             removeClient(ws);
         });
     });
 
-    console.log(`🚀 WebSocket server started on port ${env.port}`);
+    console.log(`WebSocket server started on port ${env.port}`);
 
     return wss;
 }

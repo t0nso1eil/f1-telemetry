@@ -3,23 +3,24 @@ import { SnapshotService } from "../services/snapshotService";
 
 const snapshotService = new SnapshotService();
 
-export async function broadcastSnapshots() {
+export async function broadcastSnapshot(liveSnapshot: any) {
     const clients = getClients();
 
     for (const [client, state] of clients.entries()) {
         if (client.readyState !== 1) continue;
 
         try {
-            const snap = await snapshotService.getSnapshotByTime(state.cursorTime);
+            const snap = await snapshotService.getSnapshotForClient(
+                state.delaySeconds,
+                liveSnapshot
+            );
 
             if (snap) {
                 client.send(JSON.stringify(snap));
-
-                state.cursorTime += 2000; // interval_ms
             }
 
         } catch (err) {
-            console.error("❌ broadcast error", err);
+            console.error("broadcast error", err);
         }
     }
 }

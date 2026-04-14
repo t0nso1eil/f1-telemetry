@@ -3,16 +3,16 @@ import { EachMessagePayload } from "kafkajs";
 import { createKafkaConsumer } from "../kafka/consumer";
 import { kafkaConfig } from "../kafka/config";
 
-import { setLatestSnapshot, getLatestSnapshot } from "../kafka/liveBuffer";
+import { setLatestSnapshot } from "../kafka/liveBuffer";
 import { pushSnapshot } from "../cache/snapshotCache";
 import { saveSnapshot } from "../db/snapshotRepository";
 import { createWSServer } from "../transport/wsServer";
-import { broadcastSnapshots } from "../transport/snapshotBroadcaster";
+import { broadcastSnapshot } from "../transport/snapshotBroadcaster";
 
 async function start() {
     const consumer = createKafkaConsumer();
 
-    const wss = createWSServer();
+    createWSServer();
 
     await consumer.connect();
 
@@ -21,15 +21,7 @@ async function start() {
         fromBeginning: false
     });
 
-    console.log("🚀 Gateway started. Waiting for snapshots...");
-
-    setInterval(() => {
-        const snap = getLatestSnapshot();
-
-        if (snap) {
-            console.log("🔥 live buffer works", snap.timestamp);
-        }
-    }, 5000);
+    console.log("Gateway started. Waiting for snapshots...");
 
     await consumer.run({
         eachMessage: async ({ message }: EachMessagePayload) => {
@@ -39,7 +31,7 @@ async function start() {
                 const snapshot = JSON.parse(message.value.toString());
 
                 console.log(
-                    "📡 snapshot received",
+                    "snapshot received",
                     "drivers:", snapshot.drivers?.length || 0,
                     "timestamp:", snapshot.generated_at
                 );
@@ -47,13 +39,12 @@ async function start() {
                 setLatestSnapshot(snapshot);
 
                 await pushSnapshot(snapshot);
-
                 await saveSnapshot(snapshot);
 
-                await broadcastSnapshots();
+                await broadcastSnapshot(snapshot);
 
             } catch (err) {
-                console.error("❌ parse error", err);
+                console.error("parse error", err);
             }
         }
     });
