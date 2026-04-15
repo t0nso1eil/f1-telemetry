@@ -20,7 +20,7 @@ export class MockF1Client {
             if (this.stopped) break;
 
             await this.handler({
-                timestamp: Date.now(),
+                timestamp: msg.timestamp,
                 data: msg.data,
             });
 

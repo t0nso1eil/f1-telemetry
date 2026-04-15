@@ -2,7 +2,7 @@ import { KafkaProducer } from "../kafka/producer";
 import { MockF1Client } from "../mock/mock.f1.client";
 import { TelemetryNormalizer } from "../normalizer/telemetry.normalizer";
 import { appLogger } from "../logger";
-import {F1Parser} from "../parser/f1.parser";
+import { F1Parser } from "../parser/f1.parser";
 
 export class MockIngestionApp {
     private kafka = new KafkaProducer();

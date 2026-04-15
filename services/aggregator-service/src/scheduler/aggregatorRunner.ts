@@ -17,6 +17,7 @@ import {
     parserLogger,
     aggregatorLogger,
 } from "../logger";
+import {applyDriverFallback} from "../domain/state/applyDriverFallback";
 
 let globalDeltaSequence = 0;
 
@@ -44,7 +45,8 @@ export async function runAggregator() {
     // snapshot loop
     setInterval(async () => {
         try {
-            await publishSnapshot(producer, state);
+            const stateWithFallback = applyDriverFallback(state);
+            await publishSnapshot(producer, stateWithFallback);
         } catch (err) {
             aggregatorLogger.error("Snapshot publish error", { err });
         }

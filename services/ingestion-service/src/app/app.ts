@@ -24,7 +24,7 @@ export class IngestionApp {
                 const normalized = this.normalizer.normalize(
                     event.stream,
                     event.payload,
-                    event.timestamp
+                    event.timestamp ?? new Date(rawMessage.timestamp).toISOString()
                 );
 
                 await this.kafka.publish(normalized);
