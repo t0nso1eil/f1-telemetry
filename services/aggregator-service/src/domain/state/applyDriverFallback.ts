@@ -1,6 +1,6 @@
 import { RaceState } from "./raceState";
-import {DRIVER_FALLBACK} from "../meta/driverFallbackInfo";
-import {mergeIdentity} from "./mergeIdentityState";
+import { DRIVER_FALLBACK } from "../meta/driverFallbackInfo";
+import { mergeIdentity } from "./mergeIdentityState";
 
 export function applyDriverFallback(state: RaceState): RaceState {
     const newDrivers = new Map(state.drivers);

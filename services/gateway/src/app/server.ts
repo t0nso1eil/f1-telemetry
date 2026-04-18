@@ -8,8 +8,11 @@ import { pushSnapshot } from "../cache/snapshotCache";
 import { saveSnapshot } from "../db/snapshotRepository";
 import { createWSServer } from "../transport/wsServer";
 import { broadcastSnapshot } from "../transport/snapshotBroadcaster";
+import { waitForDependencies } from "../bootstrap/waitForDependencies";
 
 async function start() {
+    await waitForDependencies();
+
     const consumer = createKafkaConsumer();
 
     createWSServer();
