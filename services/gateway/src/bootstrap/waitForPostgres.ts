@@ -15,10 +15,10 @@ export async function waitForPostgres() {
     while (retries) {
         try {
             await pool.query("SELECT 1");
-            console.log("✅ Postgres ready");
+            console.info("Postgres ready");
             return;
         } catch (err) {
-            console.log("⏳ waiting for Postgres...");
+            console.log("Waiting for Postgres...");
             retries--;
             await new Promise(res => setTimeout(res, 2000));
         }

@@ -1,0 +1,115 @@
+{
+  "title": "Aggregator Service",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Kafka Connection",
+      "targets": [
+        {
+          "expr": "kafka_connection_up"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Messages/sec",
+      "targets": [
+        {
+          "expr": "rate(aggregator_messages_total[1m])"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Deltas/sec",
+      "targets": [
+        {
+          "expr": "rate(aggregator_deltas_total[1m])"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Snapshots/sec",
+      "targets": [
+        {
+          "expr": "rate(aggregator_snapshots_total[1m])"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Drivers Count",
+      "targets": [
+        {
+          "expr": "aggregator_drivers_count"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Processing Errors",
+      "targets": [
+        {
+          "expr": "rate(aggregator_processing_errors_total[1m])"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Snapshot Errors",
+      "targets": [
+        {
+          "expr": "rate(aggregator_snapshot_errors_total[1m])"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Parser Errors by Stream",
+      "targets": [
+        {
+          "expr": "rate(parser_errors_total[1m])"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Parser Events by Stream",
+      "targets": [
+        {
+          "expr": "rate(parser_events_total[1m])"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Fallback Applied",
+      "targets": [
+        {
+          "expr": "rate(aggregator_fallback_applied_total[1m])"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Deltas by Type",
+      "targets": [
+        {
+          "expr": "rate(aggregator_deltas_by_type_total[1m])"
+        }
+      ]
+    },
+    {
+      "type": "histogram",
+      "title": "Snapshot Size",
+      "targets": [
+        {
+          "expr": "rate(snapshot_size_bytes_bucket[1m])"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 38,
+  "version": 1
+}

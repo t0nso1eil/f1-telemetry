@@ -16,13 +16,13 @@ export async function waitForKafka() {
             await admin.connect();
             await admin.listTopics();
 
-            console.log("✅ Kafka ready");
+            console.info("Kafka ready");
 
             await admin.disconnect();
             return;
 
         } catch (err) {
-            console.log("⏳ waiting for Kafka...");
+            console.info("Waiting for Kafka...");
             retries--;
             await new Promise(res => setTimeout(res, 2000));
         }

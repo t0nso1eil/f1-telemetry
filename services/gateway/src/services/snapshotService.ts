@@ -7,7 +7,7 @@ export class SnapshotService {
     async getSnapshotForClient(delaySeconds: number, liveSnapshot: any) {
         const source = resolveSource(delaySeconds);
 
-        console.log("using snapshot source", source);
+        console.info("using snapshot source", source);
 
         switch (source) {
             case "live":

@@ -3,7 +3,7 @@ import { DomainDelta } from "../domainDelta";
 export interface DriverUpsertDelta extends DomainDelta {
     type: "DRIVER_UPSERT";
 
-    driverId: string;         // внутренний ключ агрегатора, обычно racing number
+    driverId: string;         // внутренний ключ агрегатора - racing number
     racingNumber: string;
 
     tla?: string;

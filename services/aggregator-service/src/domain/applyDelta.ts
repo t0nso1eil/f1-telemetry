@@ -5,6 +5,7 @@ import { RaceControlMessageState } from "./state/race/raceControlMessageState";
 import { TeamRadioState } from "./state/race/teamRadioState";
 import { aggregatorLogger } from "../logger";
 import { mergeIdentity } from "./state/mergeIdentityState";
+import {deltaByType} from "../metrics";
 
 
 function cloneDriver(driver: DriverState): DriverState {
@@ -210,6 +211,7 @@ function recalculateRaceStatusCounters(state: RaceState): RaceState {
 }
 
 export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState {
+    deltaByType.inc({ type: delta.type });
     if (delta.messageId <= state.lastMessageId) {
         return state;
     }
@@ -298,6 +300,10 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
             if (delta.sessionId !== undefined) {
                 newState.sessionId = delta.sessionId;
             }
+            aggregatorLogger.debug("Session info updated", {
+                sessionId: newState.sessionId,
+                sessionName: newState.session.sessionName
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -314,6 +320,9 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
                             : delta.extrapolating
                 })
             };
+            aggregatorLogger.debug("Race status updated", {
+                status: newState.raceStatus
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -327,6 +336,10 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
                         ? delta.trackStatusMessage
                         : newState.raceStatus.trackStatusMessage
             };
+
+            aggregatorLogger.debug("Track status updated", {
+                trackStatus: newState.raceStatus.trackStatus
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -344,6 +357,8 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
                     windSpeedMps: delta.windSpeedMps
                 }
             );
+
+            aggregatorLogger.debug("Weather info updated");
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -376,12 +391,18 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
             };
 
             newState.drivers.set(delta.driverId, updated);
+            aggregatorLogger.debug("Driver upsert", {
+                driverId: delta.driverId,
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
 
         case "DRIVER_REMOVE": {
             newState.drivers.delete(delta.driverId);
+            aggregatorLogger.debug("Driver removed", {
+                driverId: delta.driverId,
+            });
             return recalculateRaceStatusCounters(newState);
         }
 
@@ -403,6 +424,10 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
             };
 
             newState.drivers.set(delta.driverId, updated);
+            aggregatorLogger.debug("Driver position updated", {
+                driverId: delta.driverId,
+                showPosition: updated.showPosition
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -420,6 +445,10 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
             };
 
             newState.drivers.set(delta.driverId, updated);
+            aggregatorLogger.debug("Driver timing updated", {
+                driverId: delta.driverId,
+                timing: updated.timing
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -438,6 +467,10 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
             };
 
             newState.drivers.set(delta.driverId, updated);
+            aggregatorLogger.debug("Driver best lap updated", {
+                driverId: delta.driverId,
+                bestLap: updated.timing.bestLap
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -456,6 +489,10 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
             };
 
             newState.drivers.set(delta.driverId, updated);
+            aggregatorLogger.debug("Driver last lap updated", {
+                driverId: delta.driverId,
+                lastLap: updated.timing.lastLap
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -470,7 +507,6 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
                     (s) => s.sector === incomingSector.sector
                 );
 
-                // --- merge segments ---
                 const existingSegments = existingSector?.segments ?? [];
 
                 const mergedSegments = (() => {
@@ -478,7 +514,7 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
 
                     const map = new Map<number, { segment: number; statusCode: number }>();
 
-                    // сначала кладём старые
+                    // сначала кладем старые
                     for (const seg of existingSegments) {
                         map.set(seg.segment, seg);
                     }
@@ -517,6 +553,9 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
             };
 
             newState.drivers.set(delta.driverId, updated);
+            aggregatorLogger.debug("Driver sectors updated", {
+                driverId: delta.driverId
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -547,6 +586,9 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
             };
 
             newState.drivers.set(delta.driverId, updated);
+            aggregatorLogger.debug("Driver speeds updated", {
+                driverId: delta.driverId
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -581,6 +623,9 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
             };
 
             newState.drivers.set(delta.driverId, updated);
+            aggregatorLogger.debug("Driver best speed updated", {
+                driverId: delta.driverId
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -599,6 +644,9 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
             };
 
             newState.drivers.set(delta.driverId, updated);
+            aggregatorLogger.debug("Driver tyres updated", {
+                driverId: delta.driverId
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -625,6 +673,9 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
             };
 
             newState.drivers.set(delta.driverId, updated);
+            aggregatorLogger.debug("Driver stints updated", {
+                driverId: delta.driverId
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -646,6 +697,9 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
             };
 
             newState.drivers.set(delta.driverId, updated);
+            aggregatorLogger.debug("Driver track state updated", {
+                driverId: delta.driverId
+            });
 
             return recalculateRaceStatusCounters(newState);
         }
@@ -665,6 +719,10 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
                 }
             );
 
+            aggregatorLogger.debug("Race control message add", {
+                message: delta.message.category
+            });
+
             return recalculateRaceStatusCounters(newState);
         }
 
@@ -675,6 +733,10 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
                 driverId: delta.radio.driverId,
                 racingNumber: delta.radio.racingNumber,
                 path: delta.radio.path
+            });
+
+            aggregatorLogger.debug("Team radio add", {
+                driver: delta.radio.racingNumber
             });
 
             return recalculateRaceStatusCounters(newState);

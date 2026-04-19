@@ -15,7 +15,7 @@ export async function getSnapshotByDelay(delaySeconds: number) {
 
     const result = await redis.lindex(KEY, -1 - indexFromEnd);
 
-    console.log("get snapshot from cache", result);
+    console.info("get snapshot from cache", result);
 
     if (!result) return null;
 

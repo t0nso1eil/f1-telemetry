@@ -6,7 +6,7 @@ export interface DriverBestLapDelta extends DomainDelta {
     driverId: string;
 
     bestLap: {
-        value?: string | null;       // "1:21.234"
+        value?: string | null;       // пример формата -"1:21.234"
         lap?: number | null;
         statusCode?: number | null;
         personalFastest?: boolean | null;

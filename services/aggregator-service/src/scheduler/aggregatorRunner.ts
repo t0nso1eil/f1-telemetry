@@ -17,14 +17,40 @@ import {
     parserLogger,
     aggregatorLogger,
 } from "../logger";
-import {applyDriverFallback} from "../domain/state/applyDriverFallback";
+import { applyDriverFallback } from "../domain/state/applyDriverFallback";
+import { checkKafka } from "../health/checks/kafkaCheck";
+import {
+    messagesTotal,
+    deltasTotal,
+    driversGauge,
+    processingErrors,
+} from "../metrics";
+import { snapshotsTotal, snapshotErrors } from "../metrics";
+import { kafkaConnectionGauge } from "../metrics";
 
 let globalDeltaSequence = 0;
+
+async function waitForKafkaReady() {
+    let retries = 10;
+
+    while (retries > 0) {
+        const ok = await checkKafka();
+
+        if (ok) return;
+
+        console.log("Kafka not ready, retry...");
+        await new Promise(r => setTimeout(r, 3000));
+        retries--;
+    }
+
+    throw new Error("Kafka not ready after retries");
+}
 
 export async function runAggregator() {
     const consumer = createKafkaConsumer();
     const producer = createKafkaProducer();
 
+    await waitForKafkaReady();
     await consumer.connect();
     await producer.connect();
 
@@ -40,14 +66,30 @@ export async function runAggregator() {
     let totalMessages = 0;
     let totalDeltas = 0;
 
+    let lastKafkaState: boolean | null = null;
+
     appLogger.info("Aggregator started");
 
     // snapshot loop
     setInterval(async () => {
         try {
             const stateWithFallback = applyDriverFallback(state);
+
+            try {
+                const ok = await checkKafka();
+                kafkaConnectionGauge.set(ok ? 1 : 0);
+                if (lastKafkaState !== ok) {
+                    kafkaLogger.warn("Kafka health changed", { ok });
+                    lastKafkaState = ok;
+                }
+            } catch {
+                kafkaConnectionGauge.set(0);
+            }
+
             await publishSnapshot(producer, stateWithFallback);
+            snapshotsTotal.inc();
         } catch (err) {
+            snapshotErrors.inc();
             aggregatorLogger.error("Snapshot publish error", { err });
         }
     }, config.snapshotIntervalMs);
@@ -57,6 +99,10 @@ export async function runAggregator() {
             if (!message.value) return;
 
             totalMessages++;
+            messagesTotal.inc();
+            parserLogger.debug("Message received", {
+                size: message.value.length,
+            });
 
             try {
                 const raw = JSON.parse(message.value.toString());
@@ -67,6 +113,12 @@ export async function runAggregator() {
 
                 const deltas = parseNormalizedEvent(raw);
                 totalDeltas += deltas.length;
+                deltasTotal.inc(deltas.length);
+                if (deltas.length > 0) {
+                    aggregatorLogger.debug("Applying deltas", {
+                        count: deltas.length,
+                    });
+                }
 
                 for (const delta of deltas) {
                     globalDeltaSequence++;
@@ -75,6 +127,7 @@ export async function runAggregator() {
                         ...delta,
                         messageId: globalDeltaSequence,
                     });
+                    driversGauge.set(state.drivers.size);
                 }
 
                 if (totalMessages % 100 === 0) {
@@ -85,6 +138,7 @@ export async function runAggregator() {
                     });
                 }
             } catch (err) {
+                processingErrors.inc();
                 aggregatorLogger.error("Processing error", { err });
             }
         },

@@ -30,7 +30,7 @@ export async function getSnapshotByDelay(delaySeconds: number) {
 
     const result = await pg.query(query, [offset]);
 
-    console.log("get snapshot from db", result);
+    console.info("get snapshot from db", result);
 
     if (result.rows.length === 0) return null;
 

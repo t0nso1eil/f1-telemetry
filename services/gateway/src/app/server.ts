@@ -24,7 +24,7 @@ async function start() {
         fromBeginning: false
     });
 
-    console.log("Gateway started. Waiting for snapshots...");
+    console.info("Gateway started. Waiting for snapshots...");
 
     await consumer.run({
         eachMessage: async ({ message }: EachMessagePayload) => {
@@ -33,7 +33,7 @@ async function start() {
             try {
                 const snapshot = JSON.parse(message.value.toString());
 
-                console.log(
+                console.info(
                     "snapshot received",
                     "drivers:", snapshot.drivers?.length || 0,
                     "timestamp:", snapshot.generated_at

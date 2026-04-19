@@ -10,6 +10,17 @@ services:
     ports:
       - "2181:2181"
 
+  zoo-navigator:
+    image: elkozmon/zoonavigator:latest
+    container_name: f1-zoo-ui
+    ports:
+      - "9002:9000"
+    environment:
+      HTTP_PORT: 9000
+      AUTO_CONNECT_CONNECTION_STRING: zookeeper:2181
+    depends_on:
+      - zookeeper
+
   kafka-1:
     image: confluentinc/cp-kafka:7.5.0
     container_name: f1-kafka-1
@@ -31,9 +42,14 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
-      KAFKA_MIN_INSYNC_REPLICAS: 2
 
+      KAFKA_MIN_INSYNC_REPLICAS: 2
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+    healthcheck:
+      test: [ "CMD", "cub", "kafka-ready", "-b", "localhost:9092", "1", "20" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
 
   kafka-2:
@@ -54,8 +70,17 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
 
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+
       KAFKA_MIN_INSYNC_REPLICAS: 2
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+    healthcheck:
+      test: [ "CMD", "cub", "kafka-ready", "-b", "localhost:9093", "1", "20" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
 
   kafka-3:
@@ -76,8 +101,17 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
 
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+
       KAFKA_MIN_INSYNC_REPLICAS: 2
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+    healthcheck:
+      test: [ "CMD", "cub", "kafka-ready", "-b", "localhost:9094", "1", "20" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
 
   redis:
@@ -85,6 +119,11 @@ services:
     container_name: f1-redis
     ports:
       - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   redis-insight:
     image: redis/redisinsight:latest
@@ -105,7 +144,12 @@ services:
       POSTGRES_DB: telemetry
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U f1 -d telemetry" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   pgadmin:
     image: dpage/pgadmin4
@@ -138,9 +182,12 @@ services:
     image: confluentinc/cp-kafka:7.5.0
     container_name: f1-kafka-init
     depends_on:
-      - kafka-1
-      - kafka-2
-      - kafka-3
+      kafka-1:
+        condition: service_healthy
+      kafka-2:
+        condition: service_healthy
+      kafka-3:
+        condition: service_healthy
     entrypoint: /bin/bash
     command: -ec "
 
@@ -151,7 +198,7 @@ services:
 
       kafka-topics --create --if-not-exists \
       --topic telemetry.raw \
-      --bootstrap-server kafka-1:29092 \
+      --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 \
       --replication-factor 3 \
       --partitions 6 \
       --config retention.ms=86400000 \
@@ -161,7 +208,7 @@ services:
 
       kafka-topics --create --if-not-exists \
       --topic telemetry.snapshot \
-      --bootstrap-server kafka-1:29092 \
+      --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 \
       --replication-factor 3 \
       --partitions 3 \
       --config retention.ms=-1;
@@ -170,7 +217,7 @@ services:
 
       kafka-topics --create --if-not-exists \
       --topic system.logs \
-      --bootstrap-server kafka-1:29092 \
+      --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 \
       --replication-factor 3 \
       --partitions 3 \
       --config retention.ms=604800000;
@@ -186,14 +233,23 @@ services:
     env_file:
        - ../../services/aggregator-service/.env
     depends_on:
-      - kafka-1
-      - kafka-2
-      - kafka-3
-      - redis
-      - postgres
+      kafka-1:
+        condition: service_healthy
+      kafka-2:
+        condition: service_healthy
+      kafka-3:
+        condition: service_healthy
+    ports:
+      - "3100:3100"
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:3100/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
   ingestion-service:
+    profiles: ["real"]
     build:
       context: ../../services/ingestion-service
       dockerfile: Dockerfile
@@ -224,6 +280,7 @@ services:
     restart: unless-stopped
 
   mock-ingestion-service:
+    profiles: ["mock"]
     build:
       context: ../../services/mock-ingestion-service
     environment:
@@ -232,6 +289,30 @@ services:
       - kafka-1
       - kafka-2
       - kafka-3
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus
 
 volumes:
   pgdata:

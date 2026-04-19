@@ -3,11 +3,11 @@ import { waitForPostgres } from "./waitForPostgres";
 import { waitForRedis } from "./waitForRedis";
 
 export async function waitForDependencies() {
-    console.log("Checking dependencies...");
+    console.info("Checking dependencies...");
 
     await waitForKafka();
     await waitForPostgres();
     await waitForRedis();
 
-    console.log("All dependencies are ready");
+    console.info("All dependencies are ready");
 }

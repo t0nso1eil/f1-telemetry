@@ -24,7 +24,7 @@ export function createWSServer() {
 
                 if (msg.type === "set_delay") {
                     setClientDelay(ws, msg.delay);
-                    console.log("delay set:", msg.delay);
+                    console.info("delay set:", msg.delay);
                 }
 
             } catch (err) {
@@ -33,7 +33,7 @@ export function createWSServer() {
         });
 
         ws.on("close", () => {
-            console.log("client disconnected");
+            console.info("client disconnected");
             removeClient(ws);
         });
     });

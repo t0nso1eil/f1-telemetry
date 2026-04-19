@@ -9,7 +9,6 @@ const listeners: Listener[] = [];
 export function setLatestSnapshot(snapshot: Snapshot) {
     latestSnapshot = snapshot;
 
-    // 🔥 уведомляем всех подписчиков
     for (const listener of listeners) {
         listener(snapshot);
     }

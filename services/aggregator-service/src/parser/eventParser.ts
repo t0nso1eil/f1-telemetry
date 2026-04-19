@@ -10,6 +10,7 @@ import { parseSessionStatus } from "./streams/parseSessionStatus";
 import { parseRaceControlMessages } from "./streams/parseRaceControlMessages";
 import { parseTeamRadio } from "./streams/parseTeamRadio";
 import { parserLogger } from "../logger";
+import { parserErrorsTotal, parserEventsTotal } from "../metrics";
 
 export function parseNormalizedEvent(event: any): AggregatorDelta[] {
     const deltas: AggregatorDelta[] = [];
@@ -28,6 +29,7 @@ export function parseNormalizedEvent(event: any): AggregatorDelta[] {
         stream,
         timestamp
     });
+    parserEventsTotal.inc({ stream });
 
     if (!payload) {
         parserLogger.warn({
@@ -80,6 +82,7 @@ export function parseNormalizedEvent(event: any): AggregatorDelta[] {
             stream,
             error: err
         });
+        parserErrorsTotal.inc({ stream });
 
         return deltas;
     }

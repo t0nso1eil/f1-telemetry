@@ -2,8 +2,11 @@ import 'dotenv/config';
 
 import { runAggregator } from "./scheduler/aggregatorRunner";
 import { appLogger } from "./logger";
+import { startHealthServer } from "./health/healthServer";
 
 async function bootstrap() {
+    startHealthServer(3100);
+
     const shutdown = async (signal: string) => {
         appLogger.warn("Shutdown signal", { signal });
         process.exit(0);

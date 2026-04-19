@@ -15,13 +15,13 @@ export async function waitForRedis() {
             await client.connect();
             await client.ping();
 
-            console.log("✅ Redis ready");
+            console.info("Redis ready");
 
             await client.quit();
             return;
 
         } catch (err) {
-            console.log("⏳ waiting for Redis...");
+            console.info("Waiting for Redis...");
             retries--;
             await new Promise(res => setTimeout(res, 2000));
         }
