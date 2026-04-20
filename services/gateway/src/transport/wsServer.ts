@@ -2,6 +2,9 @@ import { WebSocketServer, WebSocket } from "ws";
 import { addClient, removeClient, setClientDelay } from "./clientRegistry";
 import { getLatestSnapshot } from "../kafka/liveBuffer";
 import { env } from "../config/env";
+import { createLogger } from "../logger/logger";
+
+const logger = createLogger("broadcast");
 
 export function createWSServer() {
     const wss = new WebSocketServer({
@@ -9,7 +12,7 @@ export function createWSServer() {
     });
 
     wss.on("connection", (ws: WebSocket) => {
-        console.log("client connected");
+        logger.info("Client connected");
 
         addClient(ws);
 
@@ -24,21 +27,21 @@ export function createWSServer() {
 
                 if (msg.type === "set_delay") {
                     setClientDelay(ws, msg.delay);
-                    console.info("delay set:", msg.delay);
+                    logger.info(msg.delay, "Delay set:");
                 }
 
             } catch (err) {
-                console.error("ws message error", err);
+                logger.error({ err }, "Parse error");
             }
         });
 
         ws.on("close", () => {
-            console.info("client disconnected");
+            console.info("Client disconnected");
             removeClient(ws);
         });
     });
 
-    console.log(`WebSocket server started on port ${env.port}`);
+    logger.info(`WebSocket server started on port ${env.port}`);
 
     return wss;
 }

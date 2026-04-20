@@ -1,22 +1,29 @@
 import { resolveSource } from "../routing/snapshotRouter";
 import { getSnapshotByDelay as getFromRedis } from "../cache/snapshotCache";
 import { getSnapshotByDelay as getFromDb } from "../db/snapshotRepository";
+import { cacheHits } from "../metrics";
+import { createLogger } from "../logger/logger";
+
+const logger = createLogger("snapshot");
 
 export class SnapshotService {
 
     async getSnapshotForClient(delaySeconds: number, liveSnapshot: any) {
         const source = resolveSource(delaySeconds);
 
-        console.info("using snapshot source", source);
+        logger.info(`Using ${source} as data source`);
 
         switch (source) {
             case "live":
+                cacheHits.inc({ source });
                 return liveSnapshot;
 
             case "redis":
+                cacheHits.inc({ source });
                 return await getFromRedis(delaySeconds);
 
             case "postgres":
+                cacheHits.inc({ source });
                 return await getFromDb(delaySeconds);
 
             default:

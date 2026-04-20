@@ -6,3 +6,7 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets: ["f1-aggregator:3100"]
+  - job_name: "gateway"
+    metrics_path: /metrics
+    static_configs:
+      - targets: [ "f1-gateway:3002" ]

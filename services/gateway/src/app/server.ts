@@ -9,22 +9,26 @@ import { saveSnapshot } from "../db/snapshotRepository";
 import { createWSServer } from "../transport/wsServer";
 import { broadcastSnapshot } from "../transport/snapshotBroadcaster";
 import { waitForDependencies } from "../bootstrap/waitForDependencies";
+import { snapshotsReceived } from "../metrics";
+import { startMetricsServer } from "./metricsServer";
+import { env } from "../config/env";
+import { createLogger } from "../logger/logger";
+
+const logger = createLogger("app");
 
 async function start() {
     await waitForDependencies();
+    startMetricsServer(env.metrics_port || 3002);
 
     const consumer = createKafkaConsumer();
-
     createWSServer();
-
     await consumer.connect();
-
     await consumer.subscribe({
         topic: kafkaConfig.topics.snapshot,
         fromBeginning: false
     });
 
-    console.info("Gateway started. Waiting for snapshots...");
+    logger.info("Gateway started. Waiting for snapshots...");
 
     await consumer.run({
         eachMessage: async ({ message }: EachMessagePayload) => {
@@ -33,11 +37,11 @@ async function start() {
             try {
                 const snapshot = JSON.parse(message.value.toString());
 
-                console.info(
-                    "snapshot received",
-                    "drivers:", snapshot.drivers?.length || 0,
-                    "timestamp:", snapshot.generated_at
-                );
+                logger.info({
+                    drivers: snapshot.drivers?.length || 0,
+                    timestamp: snapshot.generated_at
+                }, "snapshot received");
+                snapshotsReceived.inc();
 
                 setLatestSnapshot(snapshot);
 
@@ -47,10 +51,10 @@ async function start() {
                 await broadcastSnapshot(snapshot);
 
             } catch (err) {
-                console.error("parse error", err);
+                logger.error({ err }, "processing error");
             }
         }
     });
 }
 
-start().catch(console.error);
+start().catch(logger.error);

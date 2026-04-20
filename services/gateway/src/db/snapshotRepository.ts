@@ -1,4 +1,7 @@
 import { pg } from "./postgresClient";
+import { createLogger } from "../logger/logger";
+
+const logger = createLogger("postgres");
 
 export async function saveSnapshot(snapshot: any) {
     const query = `
@@ -30,7 +33,7 @@ export async function getSnapshotByDelay(delaySeconds: number) {
 
     const result = await pg.query(query, [offset]);
 
-    console.info("get snapshot from db", result);
+    logger.info({ result }, "Get snapshot from DB");
 
     if (result.rows.length === 0) return null;
 

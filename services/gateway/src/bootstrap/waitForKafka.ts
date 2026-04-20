@@ -1,5 +1,8 @@
 import { Kafka } from "kafkajs";
 import { env } from "../config/env";
+import { createLogger } from "../logger/logger";
+
+const logger = createLogger("bootstrap");
 
 export async function waitForKafka() {
     const kafka = new Kafka({
@@ -16,13 +19,13 @@ export async function waitForKafka() {
             await admin.connect();
             await admin.listTopics();
 
-            console.info("Kafka ready");
+            logger.info("Kafka ready");
 
             await admin.disconnect();
             return;
 
         } catch (err) {
-            console.info("Waiting for Kafka...");
+            logger.warn("Waiting for Kafka...");
             retries--;
             await new Promise(res => setTimeout(res, 2000));
         }

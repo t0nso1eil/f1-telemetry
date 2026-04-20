@@ -1,4 +1,5 @@
 import { WebSocket } from "ws";
+import { wsClientsGauge } from "../metrics";
 
 export type ClientState = {
     delaySeconds: number;
@@ -7,13 +8,13 @@ export type ClientState = {
 const clients = new Map<WebSocket, ClientState>();
 
 export function addClient(ws: WebSocket) {
-    clients.set(ws, {
-        delaySeconds: 0
-    });
+    clients.set(ws, { delaySeconds: 0 });
+    wsClientsGauge.set(clients.size);
 }
 
 export function removeClient(ws: WebSocket) {
     clients.delete(ws);
+    wsClientsGauge.set(clients.size);
 }
 
 export function getClients() {

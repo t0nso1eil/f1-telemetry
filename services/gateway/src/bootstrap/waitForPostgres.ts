@@ -1,5 +1,8 @@
 import { Pool } from "pg";
 import { env } from "../config/env";
+import { createLogger } from "../logger/logger";
+
+const logger = createLogger("bootstrap");
 
 const pool = new Pool({
     host: env.postgres.host,
@@ -15,10 +18,10 @@ export async function waitForPostgres() {
     while (retries) {
         try {
             await pool.query("SELECT 1");
-            console.info("Postgres ready");
+            logger.info("Postgres ready");
             return;
         } catch (err) {
-            console.log("Waiting for Postgres...");
+            logger.warn("Waiting for Postgres...");
             retries--;
             await new Promise(res => setTimeout(res, 2000));
         }

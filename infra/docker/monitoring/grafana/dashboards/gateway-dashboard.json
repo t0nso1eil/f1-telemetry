@@ -1,0 +1,65 @@
+{
+  "title": "Gateway Service",
+  "uid": "gateway",
+  "schemaVersion": 36,
+  "version": 1,
+  "refresh": "5s",
+  "panels": [
+
+    {
+      "type": "stat",
+      "title": "Kafka Connection",
+      "targets": [
+        {
+          "expr": "gateway_kafka_connection_up"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }
+    },
+
+    {
+      "type": "stat",
+      "title": "WS Clients",
+      "targets": [
+        {
+          "expr": "gateway_ws_clients"
+        }
+      ],
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }
+    },
+
+    {
+      "type": "timeseries",
+      "title": "Snapshots Received",
+      "targets": [
+        {
+          "expr": "rate(gateway_snapshots_received_total[1m])"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 6 }
+    },
+
+    {
+      "type": "timeseries",
+      "title": "Broadcast Errors",
+      "targets": [
+        {
+          "expr": "rate(gateway_broadcast_errors_total[1m])"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 6 }
+    },
+
+    {
+      "type": "timeseries",
+      "title": "Cache Hits",
+      "targets": [
+        {
+          "expr": "rate(gateway_cache_hits_total[1m])"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 10, "w": 24, "h": 6 }
+    }
+
+  ]
+}

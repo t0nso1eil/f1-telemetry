@@ -1,4 +1,7 @@
 import { redis } from "./redisClient";
+import { createLogger } from "../logger/logger";
+
+const logger = createLogger("redis");
 
 const KEY = "race:snapshots";
 const MAX_LENGTH = 1000;
@@ -15,7 +18,7 @@ export async function getSnapshotByDelay(delaySeconds: number) {
 
     const result = await redis.lindex(KEY, -1 - indexFromEnd);
 
-    console.info("get snapshot from cache", result);
+    logger.info({ result }, "Snapshot received");
 
     if (!result) return null;
 

@@ -1,5 +1,8 @@
 import Redis from "ioredis";
 import { env } from "../config/env";
+import { createLogger } from "../logger/logger";
+
+const logger = createLogger("bootstrap");
 
 export async function waitForRedis() {
     const client = new Redis({
@@ -15,13 +18,13 @@ export async function waitForRedis() {
             await client.connect();
             await client.ping();
 
-            console.info("Redis ready");
+            logger.info("Redis ready");
 
             await client.quit();
             return;
 
         } catch (err) {
-            console.info("Waiting for Redis...");
+            logger.warn("Waiting for Redis...");
             retries--;
             await new Promise(res => setTimeout(res, 2000));
         }

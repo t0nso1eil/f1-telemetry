@@ -17,7 +17,3 @@ export function setLatestSnapshot(snapshot: Snapshot) {
 export function getLatestSnapshot(): Snapshot | null {
     return latestSnapshot;
 }
-
-export function subscribe(listener: Listener) {
-    listeners.push(listener);
-}

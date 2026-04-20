@@ -277,6 +277,7 @@ services:
       - postgres
     ports:
       - "3000:3000"
+      - "3002:3002"
     restart: unless-stopped
 
   mock-ingestion-service:
