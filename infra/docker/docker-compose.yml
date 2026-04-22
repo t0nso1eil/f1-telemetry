@@ -46,7 +46,7 @@ services:
       KAFKA_MIN_INSYNC_REPLICAS: 2
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
     healthcheck:
-      test: [ "CMD", "cub", "kafka-ready", "-b", "kafka-1:29092", "1", "20" ]
+      test: [ "CMD", "cub", "kafka-ready", "-b", "localhost:9092", "1", "20" ]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -77,7 +77,7 @@ services:
       KAFKA_MIN_INSYNC_REPLICAS: 2
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
     healthcheck:
-      test: [ "CMD", "cub", "kafka-ready", "-b", "kafka-2:29093", "1", "20" ]
+      test: [ "CMD", "cub", "kafka-ready", "-b", "localhost:9093", "1", "20" ]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -108,7 +108,7 @@ services:
       KAFKA_MIN_INSYNC_REPLICAS: 2
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
     healthcheck:
-      test: [ "CMD", "cub", "kafka-ready", "-b", "kafka-3:29094", "1", "20" ]
+      test: [ "CMD", "cub", "kafka-ready", "-b", "localhost:9094", "1", "20" ]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -188,41 +188,42 @@ services:
         condition: service_healthy
       kafka-3:
         condition: service_healthy
+    entrypoint: /bin/bash
+    command: -ec "
 
-    entrypoint: ["/bin/bash", "-c"]
+      echo 'Waiting for Kafka...';
+      cub kafka-ready -b kafka-1:29092 1 40;
 
-    command: |
-      set -e
+      echo 'Creating telemetry.raw';
 
-      echo "Waiting for Kafka cluster..."
-  
-      cub kafka-ready -b kafka-1:29092 1 60
-  
-      echo "Creating topics..."
-  
-      kafka-topics --bootstrap-server kafka-1:29092 \
-        --create --if-not-exists \
-        --topic telemetry.raw \
-        --replication-factor 3 \
-        --partitions 6 \
-        --config retention.ms=86400000 \
-        --config min.insync.replicas=2
-  
-      kafka-topics --bootstrap-server kafka-1:29092 \
-        --create --if-not-exists \
-        --topic telemetry.snapshot \
-        --replication-factor 3 \
-        --partitions 3 \
-        --config retention.ms=-1
-  
-      kafka-topics --bootstrap-server kafka-1:29092 \
-        --create --if-not-exists \
-        --topic system.logs \
-        --replication-factor 3 \
-        --partitions 3 \
-        --config retention.ms=604800000
-  
-      echo "All topics created successfully"
+      kafka-topics --create --if-not-exists \
+      --topic telemetry.raw \
+      --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 \
+      --replication-factor 3 \
+      --partitions 6 \
+      --config retention.ms=86400000 \
+      --config min.insync.replicas=2;
+
+      echo 'Creating telemetry.snapshot';
+
+      kafka-topics --create --if-not-exists \
+      --topic telemetry.snapshot \
+      --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 \
+      --replication-factor 3 \
+      --partitions 3 \
+      --config retention.ms=-1;
+
+      echo 'Creating system.logs';
+
+      kafka-topics --create --if-not-exists \
+      --topic system.logs \
+      --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 \
+      --replication-factor 3 \
+      --partitions 3 \
+      --config retention.ms=604800000;
+
+      echo 'Topics successfully created';
+      "
 
   aggregator-service:
     build:
@@ -230,7 +231,7 @@ services:
       dockerfile: Dockerfile
     container_name: f1-aggregator
     env_file:
-       - ../../services/aggregator-service/.env
+      - ../../services/aggregator-service/.env
     depends_on:
       kafka-1:
         condition: service_healthy
