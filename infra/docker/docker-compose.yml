@@ -189,39 +189,23 @@ services:
       kafka-3:
         condition: service_healthy
     entrypoint: /bin/bash
+    user: root
+    environment:
+      KAFKA_LOG4J_OPTS: "-Dlog4j.configuration=file:/etc/kafka/log4j.properties"
     command: -ec "
 
       echo 'Waiting for Kafka...';
       cub kafka-ready -b kafka-1:29092 1 40;
-
+      
       echo 'Creating telemetry.raw';
-
-      kafka-topics --create --if-not-exists \
-      --topic telemetry.raw \
-      --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 \
-      --replication-factor 3 \
-      --partitions 6 \
-      --config retention.ms=86400000 \
-      --config min.insync.replicas=2;
-
+      kafka-topics --create --if-not-exists --topic telemetry.raw --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 --replication-factor 3 --partitions 6 --config retention.ms=86400000 --config min.insync.replicas=2;
+      
       echo 'Creating telemetry.snapshot';
-
-      kafka-topics --create --if-not-exists \
-      --topic telemetry.snapshot \
-      --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 \
-      --replication-factor 3 \
-      --partitions 3 \
-      --config retention.ms=-1;
-
+      kafka-topics --create --if-not-exists --topic telemetry.snapshot --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 --replication-factor 3 --partitions 3 --config retention.ms=-1;
+      
       echo 'Creating system.logs';
-
-      kafka-topics --create --if-not-exists \
-      --topic system.logs \
-      --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 \
-      --replication-factor 3 \
-      --partitions 3 \
-      --config retention.ms=604800000;
-
+      kafka-topics --create --if-not-exists --topic system.logs --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 --replication-factor 3 --partitions 3 --config retention.ms=604800000;
+      
       echo 'Topics successfully created';
       "
 
