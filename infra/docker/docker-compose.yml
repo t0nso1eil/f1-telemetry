@@ -299,18 +299,19 @@ services:
     depends_on:
       - prometheus
 
-  dockge:
-    image: louislam/dockge:1
-    container_name: f1-dockge
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: f1-portainer
     restart: unless-stopped
     ports:
-      - "5001:5001"
+      - "9000:9000"   # Web UI
+      - "9443:9443"   # HTTPS UI
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./dockge-data:/app/data
-      - ./:/opt/stacks
+      - portainer_data:/data
     environment:
-      - DOCKGE_STACKS_DIR=/opt/stacks
+      - TZ=Europe/Helsinki
 
 volumes:
   pgdata:
+  portainer_data:
