@@ -2,6 +2,7 @@ import axios from "axios";
 import WebSocket from "ws";
 import { config } from "../config/config";
 import { f1Logger } from "../logger";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
 type Handler = (data: any) => Promise<void>;
 
@@ -36,7 +37,17 @@ export class F1SignalRClient {
         const hub = encodeURIComponent(JSON.stringify(config.f1.hub));
         const url = `${config.f1.negotiateUrl}?connectionData=${hub}&clientProtocol=1.5`;
 
-        const res = await axios.get(url);
+        const agent = config.proxyUrl
+            ? new HttpsProxyAgent(config.proxyUrl)
+            : undefined;
+
+        const res = await axios.get(url, {
+            httpsAgent: agent,
+            headers: {
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "*/*",
+            },
+        });
 
         this.connectionToken = res.data.ConnectionToken;
         this.cookie = Array.isArray(res.headers["set-cookie"])
@@ -58,7 +69,12 @@ export class F1SignalRClient {
                 `&connectionToken=${token}` +
                 `&connectionData=${hub}`;
 
+            const agent = config.proxyUrl
+                ? new HttpsProxyAgent(config.proxyUrl)
+                : undefined;
+
             this.ws = new WebSocket(url, {
+                agent,
                 headers: {
                     Cookie: this.cookie!,
                     "User-Agent": "BestHTTP",

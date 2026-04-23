@@ -19,4 +19,6 @@ export const config = {
         hub: [{ name: "Streaming" }],
         reconnectDelayMs: env.f1.reconnectDelayMs,
     },
+
+    proxyUrl: process.env.PROXY_URL,
 };
