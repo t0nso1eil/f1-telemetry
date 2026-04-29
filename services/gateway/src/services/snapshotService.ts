@@ -22,7 +22,7 @@ export class SnapshotService {
                 cacheHits.inc({ source });
                 return await getFromRedis(delaySeconds);
 
-            case "postgres":
+            case "timescaledb":
                 cacheHits.inc({ source });
                 return await getFromDb(delaySeconds);
 
