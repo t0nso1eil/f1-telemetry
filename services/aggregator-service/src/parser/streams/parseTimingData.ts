@@ -25,6 +25,15 @@ export function parseTimingData(data: any, timestamp: number): AggregatorDelta[]
 
     let seq = 0;
 
+    if (data?.SessionPart !== undefined) {
+        deltas.push({
+            type: "SESSION_INFO_UPDATE",
+            sessionPart: toNumber(data.SessionPart) ?? undefined,
+            messageId: timestamp * 1000 + seq++,
+            timestamp
+        });
+    }
+
     for (const driverId of Object.keys(data.Lines)) {
         const line = data.Lines[driverId];
         if (!line) continue;

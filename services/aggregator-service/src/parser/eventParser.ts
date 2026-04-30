@@ -11,6 +11,7 @@ import { parseRaceControlMessages } from "./streams/parseRaceControlMessages";
 import { parseTeamRadio } from "./streams/parseTeamRadio";
 import { parserLogger } from "../logger";
 import { parserErrorsTotal, parserEventsTotal } from "../metrics";
+import { parseSessionData } from "./streams/parseSessionData";
 
 export function parseNormalizedEvent(event: any): AggregatorDelta[] {
     const deltas: AggregatorDelta[] = [];
@@ -65,6 +66,9 @@ export function parseNormalizedEvent(event: any): AggregatorDelta[] {
 
             case "RaceControlMessages":
                 return parseRaceControlMessages(payload, timestamp);
+
+            case "SessionData":
+                return parseSessionData(payload, timestamp);
 
             case "TeamRadio":
                 return parseTeamRadio(payload, timestamp);
