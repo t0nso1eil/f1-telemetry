@@ -1,6 +1,7 @@
 import {AggregatorDelta} from "../../domain/delta/aggregatorDelta";
+import { EventMeta } from "../eventMeta";
 
-export function parseSessionData(data: any, timestamp: number): AggregatorDelta[] {
+export function parseSessionData(data: any, timestamp: number, meta: EventMeta): AggregatorDelta[] {
     const deltas: AggregatorDelta[] = [];
 
     const qualifyingPart = extractLatestQualifyingPart(data?.Series);
@@ -10,7 +11,11 @@ export function parseSessionData(data: any, timestamp: number): AggregatorDelta[
             type: "SESSION_INFO_UPDATE",
             qualifyingPart,
             messageId: timestamp * 1000,
-            timestamp
+            timestamp,
+
+            eventId: meta.eventId,
+            ingestionReceivedAt: meta.ingestionReceivedAt,
+            aggregatorReceivedAt: meta.aggregatorReceivedAt,
         });
     }
 

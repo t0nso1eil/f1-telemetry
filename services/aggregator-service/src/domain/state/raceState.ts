@@ -25,4 +25,12 @@ export interface RaceState {
 
     lastMessageId: number;
     lastUpdateTs: number;
+
+    meta: {
+        minIngestionReceivedAt: number | null;
+        maxIngestionReceivedAt: number | null;
+
+        minAggregatorReceivedAt: number | null;
+        maxAggregatorReceivedAt: number | null;
+    };
 }

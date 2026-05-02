@@ -1,4 +1,5 @@
 import { AggregatorDelta } from "../../domain/delta/aggregatorDelta";
+import { EventMeta } from "../eventMeta";
 
 function toNumber(value: unknown): number | null | undefined {
     if (value === undefined) return undefined;
@@ -28,7 +29,7 @@ function mapCompound(value?: string) {
     return "unknown" as const;
 }
 
-export function parseTimingAppData(data: any, timestamp: number): AggregatorDelta[] {
+export function parseTimingAppData(data: any, timestamp: number, meta: EventMeta): AggregatorDelta[] {
     const deltas: AggregatorDelta[] = [];
     if (!data?.Lines) return deltas;
 
@@ -70,7 +71,11 @@ export function parseTimingAppData(data: any, timestamp: number): AggregatorDelt
                 tyreAgeLaps: currentStint?.totalLaps ?? null,
                 tyresNotChanged: currentStint?.tyresNotChanged,
                 messageId: timestamp * 1000 + seq++,
-                timestamp
+                timestamp,
+
+                eventId: meta.eventId,
+                ingestionReceivedAt: meta.ingestionReceivedAt,
+                aggregatorReceivedAt: meta.aggregatorReceivedAt,
             });
 
             deltas.push({
@@ -88,7 +93,11 @@ export function parseTimingAppData(data: any, timestamp: number): AggregatorDelt
                     referenceLapNumber?: number | null;
                 }>,
                 messageId: timestamp * 1000 + seq++,
-                timestamp
+                timestamp,
+
+                eventId: meta.eventId,
+                ingestionReceivedAt: meta.ingestionReceivedAt,
+                aggregatorReceivedAt: meta.aggregatorReceivedAt,
             });
         }
     }

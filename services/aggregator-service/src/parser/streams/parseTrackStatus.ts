@@ -1,4 +1,5 @@
 import { AggregatorDelta } from "../../domain/delta/aggregatorDelta";
+import { EventMeta } from "../eventMeta";
 
 function mapTrackStatus(status?: string) {
     switch (String(status)) {
@@ -21,14 +22,18 @@ function mapTrackStatus(status?: string) {
     }
 }
 
-export function parseTrackStatus(data: any, timestamp: number): AggregatorDelta[] {
+export function parseTrackStatus(data: any, timestamp: number, meta: EventMeta): AggregatorDelta[] {
     return [
         {
             type: "TRACK_STATUS_UPDATE",
             trackStatus: mapTrackStatus(data?.Status),
             trackStatusMessage: data?.Message ?? null,
             messageId: timestamp * 1000,
-            timestamp
+            timestamp,
+
+            eventId: meta.eventId,
+            ingestionReceivedAt: meta.ingestionReceivedAt,
+            aggregatorReceivedAt: meta.aggregatorReceivedAt,
         }
     ];
 }

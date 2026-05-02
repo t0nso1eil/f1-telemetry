@@ -1,4 +1,5 @@
 import { AggregatorDelta } from "../../domain/delta/aggregatorDelta";
+import { EventMeta } from "../eventMeta";
 
 function toEpochMs(value?: string | null, fallback?: number): number {
     if (!value) return fallback ?? Date.now();
@@ -18,7 +19,7 @@ function buildRaceControlId(message: any, utc: number): string {
     ].join("|");
 }
 
-export function parseRaceControlMessages(data: any, timestamp: number): AggregatorDelta[] {
+export function parseRaceControlMessages(data: any, timestamp: number, meta: EventMeta): AggregatorDelta[] {
     const deltas: AggregatorDelta[] = [];
     const messages = data?.Messages;
 
@@ -47,7 +48,11 @@ export function parseRaceControlMessages(data: any, timestamp: number): Aggregat
                 mode: item.Mode ?? null
             },
             messageId: timestamp * 1000 + seq++,
-            timestamp
+            timestamp,
+
+            eventId: meta.eventId,
+            ingestionReceivedAt: meta.ingestionReceivedAt,
+            aggregatorReceivedAt: meta.aggregatorReceivedAt,
         });
     }
 

@@ -72,7 +72,15 @@ export function buildRaceSnapshot(state: RaceState): RaceSnapshot {
         team_radio: state.teamRadio.map((item) => ({
             ...item,
             utc: toIso(item.utc)
-        }))
+        })),
+
+        meta: {
+            ingestion_min: toIso(state.meta.minIngestionReceivedAt ?? undefined),
+            ingestion_max: toIso(state.meta.maxIngestionReceivedAt ?? undefined),
+
+            aggregator_min: toIso(state.meta.minAggregatorReceivedAt ?? undefined),
+            aggregator_max: toIso(state.meta.maxAggregatorReceivedAt ?? undefined),
+        },
     };
 
     snapshotLogger.debug("Snapshot built", {

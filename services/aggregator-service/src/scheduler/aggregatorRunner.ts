@@ -88,6 +88,13 @@ export async function runAggregator() {
 
             await publishSnapshot(producer, stateWithFallback);
             snapshotsTotal.inc();
+
+            state.meta = {
+                minIngestionReceivedAt: null,
+                maxIngestionReceivedAt: null,
+                minAggregatorReceivedAt: null,
+                maxAggregatorReceivedAt: null,
+            };
         } catch (err) {
             snapshotErrors.inc();
             aggregatorLogger.error("Snapshot publish error", { err });

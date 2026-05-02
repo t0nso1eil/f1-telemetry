@@ -59,6 +59,37 @@
         }
       ],
       "gridPos": { "x": 0, "y": 10, "w": 24, "h": 6 }
+    },
+
+    {
+      "type": "timeseries",
+      "title": "E2E Latency (ms)",
+      "targets": [
+        {
+          "expr": "rate(gateway_snapshot_e2e_latency_ms_sum[1m]) / rate(gateway_snapshot_e2e_latency_ms_count[1m])"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 6 }
+    },
+
+    {
+      "type": "timeseries",
+      "title": "Ingestion Latency (ms)",
+      "targets": [
+        {
+          "expr": "rate(gateway_snapshot_ingestion_latency_ms_sum[1m]) / rate(gateway_snapshot_ingestion_latency_ms_count[1m])"
+        }
+      ]
+    },
+
+    {
+      "type": "timeseries",
+      "title": "Aggregator → Gateway Latency",
+      "targets": [
+        {
+          "expr": "rate(gateway_snapshot_aggregator_latency_ms_sum[1m]) / rate(gateway_snapshot_aggregator_latency_ms_count[1m])"
+        }
+      ]
     }
 
   ]

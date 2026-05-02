@@ -1,6 +1,7 @@
 import { AggregatorDelta } from "../../domain/delta/aggregatorDelta";
+import { EventMeta } from "../eventMeta";
 
-export function parseDriverList(data: any, timestamp: number): AggregatorDelta[] {
+export function parseDriverList(data: any, timestamp: number, meta: EventMeta): AggregatorDelta[] {
     const deltas: AggregatorDelta[] = [];
 
     if (!data || typeof data !== "object") {
@@ -26,7 +27,11 @@ export function parseDriverList(data: any, timestamp: number): AggregatorDelta[]
             teamColor: driver.TeamColour ?? driver.TeamColor ?? null,
             line: undefined,
             messageId: timestamp * 1000 + seq++,
-            timestamp
+            timestamp,
+
+            eventId: meta.eventId,
+            ingestionReceivedAt: meta.ingestionReceivedAt,
+            aggregatorReceivedAt: meta.aggregatorReceivedAt,
         });
     }
 

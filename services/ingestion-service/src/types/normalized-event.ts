@@ -4,4 +4,5 @@ export interface NormalizedEvent {
     stream: string;
     source: string;
     payload: unknown;
+    sourceReceivedAt: number;
 }

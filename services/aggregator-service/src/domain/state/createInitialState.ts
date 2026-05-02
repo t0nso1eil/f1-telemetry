@@ -63,6 +63,13 @@ export function createInitialState(): RaceState {
         teamRadio: [],
 
         lastMessageId: 0,
-        lastUpdateTs: 0
+        lastUpdateTs: 0,
+
+        meta: {
+            minIngestionReceivedAt: null,
+            maxIngestionReceivedAt: null,
+            minAggregatorReceivedAt: null,
+            maxAggregatorReceivedAt: null,
+        },
     };
 }

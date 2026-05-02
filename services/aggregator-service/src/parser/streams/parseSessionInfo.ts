@@ -1,4 +1,5 @@
 import { AggregatorDelta } from "../../domain/delta/aggregatorDelta";
+import { EventMeta } from "../eventMeta";
 
 function toEpochMs(value?: string | null): number | null | undefined {
     if (value === undefined) return undefined;
@@ -19,7 +20,7 @@ function mapSessionType(value?: string) {
     return "unknown" as const;
 }
 
-export function parseSessionInfo(data: any, timestamp: number): AggregatorDelta[] {
+export function parseSessionInfo(data: any, timestamp: number, meta: EventMeta): AggregatorDelta[] {
     return [
         {
             type: "SESSION_INFO_UPDATE",
@@ -40,7 +41,11 @@ export function parseSessionInfo(data: any, timestamp: number): AggregatorDelta[
             endTime: toEpochMs(data?.EndDate),
             gmtOffset: data?.GmtOffset ?? null,
             messageId: timestamp * 1000,
-            timestamp
+            timestamp,
+
+            eventId: meta.eventId,
+            ingestionReceivedAt: meta.ingestionReceivedAt,
+            aggregatorReceivedAt: meta.aggregatorReceivedAt,
         }
     ];
 }

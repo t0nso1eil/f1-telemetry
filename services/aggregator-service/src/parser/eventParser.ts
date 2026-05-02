@@ -14,6 +14,9 @@ import { parserErrorsTotal, parserEventsTotal } from "../metrics";
 import { parseSessionData } from "./streams/parseSessionData";
 
 export function parseNormalizedEvent(event: any): AggregatorDelta[] {
+    const ingestionReceivedAt = Number(event.sourceReceivedAt ?? event.timestamp);
+    const aggregatorReceivedAt = Date.now();
+
     const deltas: AggregatorDelta[] = [];
 
     if (!event) {
@@ -44,34 +47,74 @@ export function parseNormalizedEvent(event: any): AggregatorDelta[] {
     try {
         switch (stream) {
             case "DriverList":
-                return parseDriverList(payload, timestamp);
+                return parseDriverList(payload, timestamp, {
+                    eventId: event.eventId,
+                    ingestionReceivedAt,
+                    aggregatorReceivedAt,
+                });
 
             case "TimingData":
-                return parseTimingData(payload, timestamp);
+                return parseTimingData(payload, timestamp, {
+                    eventId: event.eventId,
+                    ingestionReceivedAt,
+                    aggregatorReceivedAt,
+                });
 
             case "TimingAppData":
-                return parseTimingAppData(payload, timestamp);
+                return parseTimingAppData(payload, timestamp, {
+                    eventId: event.eventId,
+                    ingestionReceivedAt,
+                    aggregatorReceivedAt,
+                });
 
             case "WeatherData":
-                return parseWeather(payload, timestamp);
+                return parseWeather(payload, timestamp, {
+                    eventId: event.eventId,
+                    ingestionReceivedAt,
+                    aggregatorReceivedAt,
+                });
 
             case "TrackStatus":
-                return parseTrackStatus(payload, timestamp);
+                return parseTrackStatus(payload, timestamp, {
+                    eventId: event.eventId,
+                    ingestionReceivedAt,
+                    aggregatorReceivedAt,
+                });
 
             case "SessionInfo":
-                return parseSessionInfo(payload, timestamp);
+                return parseSessionInfo(payload, timestamp, {
+                    eventId: event.eventId,
+                    ingestionReceivedAt,
+                    aggregatorReceivedAt,
+                });
 
             case "SessionStatus":
-                return parseSessionStatus(payload, timestamp);
+                return parseSessionStatus(payload, timestamp, {
+                    eventId: event.eventId,
+                    ingestionReceivedAt,
+                    aggregatorReceivedAt,
+                });
 
             case "RaceControlMessages":
-                return parseRaceControlMessages(payload, timestamp);
+                return parseRaceControlMessages(payload, timestamp, {
+                    eventId: event.eventId,
+                    ingestionReceivedAt,
+                    aggregatorReceivedAt,
+                });
 
             case "SessionData":
-                return parseSessionData(payload, timestamp);
+                return parseSessionData(payload, timestamp, {
+                    eventId: event.eventId,
+                    ingestionReceivedAt,
+                    aggregatorReceivedAt,
+                });
 
             case "TeamRadio":
-                return parseTeamRadio(payload, timestamp);
+                return parseTeamRadio(payload, timestamp, {
+                    eventId: event.eventId,
+                    ingestionReceivedAt,
+                    aggregatorReceivedAt,
+                });
 
             default:
                 parserLogger.debug({

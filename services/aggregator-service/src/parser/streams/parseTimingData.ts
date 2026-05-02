@@ -1,4 +1,5 @@
 import { AggregatorDelta } from "../../domain/delta/aggregatorDelta";
+import {EventMeta} from "../eventMeta";
 
 function toNumber(value: unknown): number | null | undefined {
     if (value === undefined) return undefined;
@@ -16,7 +17,7 @@ function toBoolean(value: unknown): boolean | undefined {
     return undefined;
 }
 
-export function parseTimingData(data: any, timestamp: number): AggregatorDelta[] {
+export function parseTimingData(data: any, timestamp: number, meta: EventMeta): AggregatorDelta[] {
     const deltas: AggregatorDelta[] = [];
 
     if (!data?.Lines) {
@@ -30,7 +31,11 @@ export function parseTimingData(data: any, timestamp: number): AggregatorDelta[]
             type: "SESSION_INFO_UPDATE",
             sessionPart: toNumber(data.SessionPart) ?? undefined,
             messageId: timestamp * 1000 + seq++,
-            timestamp
+            timestamp,
+
+            eventId: meta.eventId,
+            ingestionReceivedAt: meta.ingestionReceivedAt,
+            aggregatorReceivedAt: meta.aggregatorReceivedAt,
         });
     }
 
@@ -54,7 +59,11 @@ export function parseTimingData(data: any, timestamp: number): AggregatorDelta[]
                 gapToLeader: line.GapToLeader ?? null,
                 intervalToAhead: line.IntervalToPositionAhead?.Value ?? null,
                 messageId: timestamp * 1000 + seq++,
-                timestamp
+                timestamp,
+
+                eventId: meta.eventId,
+                ingestionReceivedAt: meta.ingestionReceivedAt,
+                aggregatorReceivedAt: meta.aggregatorReceivedAt,
             });
         }
 
@@ -70,7 +79,11 @@ export function parseTimingData(data: any, timestamp: number): AggregatorDelta[]
                 gapToLeader: line.GapToLeader ?? null,
                 intervalToAhead: line.IntervalToPositionAhead?.Value ?? null,
                 messageId: timestamp * 1000 + seq++,
-                timestamp
+                timestamp,
+
+                eventId: meta.eventId,
+                ingestionReceivedAt: meta.ingestionReceivedAt,
+                aggregatorReceivedAt: meta.aggregatorReceivedAt,
             });
         }
 
@@ -88,7 +101,11 @@ export function parseTimingData(data: any, timestamp: number): AggregatorDelta[]
                     }
                     : null,
                 messageId: timestamp * 1000 + seq++,
-                timestamp
+                timestamp,
+
+                eventId: meta.eventId,
+                ingestionReceivedAt: meta.ingestionReceivedAt,
+                aggregatorReceivedAt: meta.aggregatorReceivedAt,
             });
         }
 
@@ -106,7 +123,11 @@ export function parseTimingData(data: any, timestamp: number): AggregatorDelta[]
                     }
                     : null,
                 messageId: timestamp * 1000 + seq++,
-                timestamp
+                timestamp,
+
+                eventId: meta.eventId,
+                ingestionReceivedAt: meta.ingestionReceivedAt,
+                aggregatorReceivedAt: meta.aggregatorReceivedAt,
             });
         }
 
@@ -148,7 +169,11 @@ export function parseTimingData(data: any, timestamp: number): AggregatorDelta[]
                 driverId,
                 sectors,
                 messageId: timestamp * 1000 + seq++,
-                timestamp
+                timestamp,
+
+                eventId: meta.eventId,
+                ingestionReceivedAt: meta.ingestionReceivedAt,
+                aggregatorReceivedAt: meta.aggregatorReceivedAt,
             });
         }
 
@@ -191,7 +216,11 @@ export function parseTimingData(data: any, timestamp: number): AggregatorDelta[]
                         : undefined
                 },
                 messageId: timestamp * 1000 + seq++,
-                timestamp
+                timestamp,
+
+                eventId: meta.eventId,
+                ingestionReceivedAt: meta.ingestionReceivedAt,
+                aggregatorReceivedAt: meta.aggregatorReceivedAt,
             });
         }
 
@@ -215,7 +244,11 @@ export function parseTimingData(data: any, timestamp: number): AggregatorDelta[]
                 cutoff: toBoolean(line.Cutoff),
                 statusCode: toNumber(line.Status),
                 messageId: timestamp * 1000 + seq++,
-                timestamp
+                timestamp,
+
+                eventId: meta.eventId,
+                ingestionReceivedAt: meta.ingestionReceivedAt,
+                aggregatorReceivedAt: meta.aggregatorReceivedAt,
             });
         }
     }

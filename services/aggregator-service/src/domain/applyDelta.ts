@@ -216,6 +216,13 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
         return state;
     }
 
+    const meta = state.meta ?? {
+        minIngestionReceivedAt: null,
+        maxIngestionReceivedAt: null,
+        minAggregatorReceivedAt: null,
+        maxAggregatorReceivedAt: null,
+    };
+
     aggregatorLogger.debug("Delta received", {
         type: delta.type,
         messageId: delta.messageId,
@@ -236,6 +243,32 @@ export function applyDelta(state: RaceState, delta: AggregatorDelta): RaceState 
         lastUpdateTs: delta.timestamp,
         sourceTimestamp: Math.max(state.sourceTimestamp ?? 0, delta.timestamp)
     };
+
+    if (delta.ingestionReceivedAt != null) {
+        meta.minIngestionReceivedAt =
+            meta.minIngestionReceivedAt === null
+                ? delta.ingestionReceivedAt
+                : Math.min(meta.minIngestionReceivedAt, delta.ingestionReceivedAt);
+
+        meta.maxIngestionReceivedAt =
+            meta.maxIngestionReceivedAt === null
+                ? delta.ingestionReceivedAt
+                : Math.max(meta.maxIngestionReceivedAt, delta.ingestionReceivedAt);
+    }
+
+    if (delta.aggregatorReceivedAt != null) {
+        meta.minAggregatorReceivedAt =
+            meta.minAggregatorReceivedAt === null
+                ? delta.aggregatorReceivedAt
+                : Math.min(meta.minAggregatorReceivedAt, delta.aggregatorReceivedAt);
+
+        meta.maxAggregatorReceivedAt =
+            meta.maxAggregatorReceivedAt === null
+                ? delta.aggregatorReceivedAt
+                : Math.max(meta.maxAggregatorReceivedAt, delta.aggregatorReceivedAt);
+    }
+
+    newState.meta = meta;
 
     switch (delta.type) {
         case "FULL_SNAPSHOT": {

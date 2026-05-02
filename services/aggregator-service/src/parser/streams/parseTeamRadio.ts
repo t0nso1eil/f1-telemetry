@@ -1,4 +1,5 @@
 import { AggregatorDelta } from "../../domain/delta/aggregatorDelta";
+import { EventMeta } from "../eventMeta";
 
 function toEpochMs(value?: string | null, fallback?: number): number {
     if (!value) return fallback ?? Date.now();
@@ -11,7 +12,7 @@ function buildTeamRadioId(item: any, utc: number): string {
     return [utc, item?.RacingNumber ?? "", item?.Path ?? ""].join("|");
 }
 
-export function parseTeamRadio(data: any, timestamp: number): AggregatorDelta[] {
+export function parseTeamRadio(data: any, timestamp: number, meta: EventMeta): AggregatorDelta[] {
     const deltas: AggregatorDelta[] = [];
     const captures = data?.Captures;
 
@@ -38,7 +39,11 @@ export function parseTeamRadio(data: any, timestamp: number): AggregatorDelta[] 
                 path: item.Path ?? ""
             },
             messageId: timestamp * 1000 + seq++,
-            timestamp
+            timestamp,
+
+            eventId: meta.eventId,
+            ingestionReceivedAt: meta.ingestionReceivedAt,
+            aggregatorReceivedAt: meta.aggregatorReceivedAt,
         });
     }
 

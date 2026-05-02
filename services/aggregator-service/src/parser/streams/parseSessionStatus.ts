@@ -1,4 +1,5 @@
 import { AggregatorDelta } from "../../domain/delta/aggregatorDelta";
+import { EventMeta } from "../eventMeta";
 
 function mapSessionStatus(status?: string) {
     switch (String(status ?? "").toLowerCase()) {
@@ -19,7 +20,7 @@ function mapSessionStatus(status?: string) {
     }
 }
 
-export function parseSessionStatus(data: any, timestamp: number): AggregatorDelta[] {
+export function parseSessionStatus(data: any, timestamp: number, meta: EventMeta): AggregatorDelta[] {
     return [
         {
             type: "SESSION_STATUS_UPDATE",
@@ -33,7 +34,11 @@ export function parseSessionStatus(data: any, timestamp: number): AggregatorDelt
                     ? data.Extrapolating
                     : undefined,
             messageId: timestamp * 1000,
-            timestamp
+            timestamp,
+
+            eventId: meta.eventId,
+            ingestionReceivedAt: meta.ingestionReceivedAt,
+            aggregatorReceivedAt: meta.aggregatorReceivedAt,
         }
     ];
 }

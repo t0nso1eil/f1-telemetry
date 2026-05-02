@@ -1,4 +1,5 @@
 import { AggregatorDelta } from "../../domain/delta/aggregatorDelta";
+import { EventMeta } from "../eventMeta";
 
 function toNumber(value: unknown): number | null | undefined {
     if (value === undefined) return undefined;
@@ -8,7 +9,7 @@ function toNumber(value: unknown): number | null | undefined {
     return Number.isNaN(parsed) ? undefined : parsed;
 }
 
-export function parseWeather(data: any, timestamp: number): AggregatorDelta[] {
+export function parseWeather(data: any, timestamp: number, meta: EventMeta): AggregatorDelta[] {
     return [
         {
             type: "WEATHER_UPDATE",
@@ -20,7 +21,11 @@ export function parseWeather(data: any, timestamp: number): AggregatorDelta[] {
             windDirectionDeg: toNumber(data?.WindDirection),
             windSpeedMps: toNumber(data?.WindSpeed),
             messageId: timestamp * 1000,
-            timestamp
+            timestamp,
+
+            eventId: meta.eventId,
+            ingestionReceivedAt: meta.ingestionReceivedAt,
+            aggregatorReceivedAt: meta.aggregatorReceivedAt,
         }
     ];
 }

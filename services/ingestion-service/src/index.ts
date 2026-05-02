@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import { IngestionApp } from "./app/app";
 import { appLogger } from "./logger";
 

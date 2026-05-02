@@ -9,6 +9,7 @@ export class TelemetryNormalizer {
             stream,
             source: "f1-live-timing",
             payload,
+            sourceReceivedAt: Date.now(),
         };
     }
 }
