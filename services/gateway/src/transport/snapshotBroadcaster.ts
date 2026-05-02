@@ -6,7 +6,8 @@ import { createLogger } from "../logger/logger";
 import {
     snapshotE2ELatency,
     snapshotIngestionLatency,
-    snapshotAggregatorLatency
+    snapshotAggregatorLatency,
+    snapshotE2ELatencyGauge
 } from "../metrics";
 
 const logger = createLogger("broadcast");
@@ -29,24 +30,49 @@ export async function broadcastSnapshot(liveSnapshot: any) {
                 if (snap) {
                     const now = Date.now();
                     const meta = liveSnapshot.meta;
+                    const mode = state.delaySeconds > 0 ? "delayed" : "live"
 
                     if (meta?.ingestion_max) {
-                        snapshotIngestionLatency.observe(
-                            now - meta.ingestion_max
-                        );
+                        const ingestionTs = Date.parse(meta.ingestion_max);
+
+                        if (!Number.isNaN(ingestionTs)) {
+                            snapshotIngestionLatency.observe(
+                                now - ingestionTs
+                            );
+                        }
                     }
 
                     if (meta?.aggregator_max) {
-                        snapshotAggregatorLatency.observe(
-                            now - meta.aggregator_max
-                        );
+                        const aggregatorTs = Date.parse(meta.aggregator_max);
+
+                        if (!Number.isNaN(aggregatorTs)) {
+                            snapshotAggregatorLatency.observe(
+                                now - aggregatorTs
+                            );
+                        }
                     }
 
                     if (meta?.ingestion_max) {
-                        snapshotE2ELatency.observe(
-                            now - meta.ingestion_max
-                        );
+                        const ingestionTs = Date.parse(meta.ingestion_max);
+
+                        if (!Number.isNaN(ingestionTs)) {
+                            const latency = now - ingestionTs
+                            snapshotE2ELatency.observe(
+                                { mode: mode },
+                                latency
+                            );
+                            snapshotE2ELatencyGauge.set(
+                                { mode: mode },
+                                latency
+                            );
+                        }
                     }
+
+                    // logger.info({
+                    //     now: new Date().toISOString(),
+                    //     ingestion_max: meta.ingestion_max,
+                    //     aggregator_max: meta.aggregator_max
+                    // }, "latency debug");
 
                     client.send(JSON.stringify(snap));
                 }

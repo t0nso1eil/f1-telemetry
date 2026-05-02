@@ -31,7 +31,8 @@ export const cacheHits = new client.Counter({
 export const snapshotE2ELatency = new client.Histogram({
     name: "gateway_snapshot_e2e_latency_ms",
     help: "End-to-end latency from ingestion to gateway send",
-    buckets: [10, 50, 100, 200, 500, 1000, 2000, 5000]
+    buckets: [10, 50, 100, 200, 500, 1000, 2000, 5000],
+    labelNames: ["mode"]
 });
 
 export const snapshotIngestionLatency = new client.Histogram({
@@ -44,6 +45,12 @@ export const snapshotAggregatorLatency = new client.Histogram({
     name: "gateway_snapshot_aggregator_latency_ms",
     help: "Latency from aggregator to gateway",
     buckets: [10, 50, 100, 200, 500, 1000, 5000]
+});
+
+export const snapshotE2ELatencyGauge = new client.Gauge({
+    name: "gateway_snapshot_e2e_latency_last_ms",
+    help: "Last observed E2E latency",
+    labelNames: ["mode"]
 });
 
 export function metricsRegistry() {
