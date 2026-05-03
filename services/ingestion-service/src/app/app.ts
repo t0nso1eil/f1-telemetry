@@ -14,26 +14,33 @@ export class IngestionApp {
         await this.kafka.connect();
 
         await this.f1.start(async (rawMessage) => {
-            const parsedEvents = this.parser.parse(rawMessage.data);
+            try {
+                const parsedEvents = this.parser.parse(rawMessage.data);
 
-            parserLogger.info("Parsed raw message", {
-                eventsCount: parsedEvents.length,
-            });
+                parserLogger.info("Parsed raw message", {
+                    eventsCount: parsedEvents.length,
+                });
 
-            for (const event of parsedEvents) {
-                const normalized = this.normalizer.normalize(
-                    event.stream,
-                    event.payload,
-                    event.timestamp ?? new Date(rawMessage.timestamp).toISOString()
+                const batch = parsedEvents.map((event) =>
+                    this.normalizer.normalize(
+                        event.stream,
+                        event.payload,
+                        event.timestamp ??
+                        new Date(rawMessage.timestamp).toISOString()
+                    )
                 );
 
-                await this.kafka.publish(normalized);
+                await this.kafka.publishBatch(batch);
 
-                appLogger.info("Normalized event published", {
-                    stream: event.stream,
-                    timestamp: normalized.timestamp,
-                    eventId: normalized.eventId,
-                });
+                for (const normalized of batch) {
+                    appLogger.info("Normalized event published", {
+                        stream: normalized.stream,
+                        timestamp: normalized.timestamp,
+                        eventId: normalized.eventId,
+                    });
+                }
+            } catch (error) {
+                appLogger.error("Failed to process incoming message", { error });
             }
         });
 

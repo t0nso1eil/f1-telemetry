@@ -1,7 +1,7 @@
 import { Kafka, Producer } from "kafkajs";
 import { config } from "../config/config";
 import { kafkaLogger } from "../logger";
-import {NormalizedEvent} from "../types/normalized-event";
+import { NormalizedEvent } from "../types/normalized-event";
 
 export class KafkaProducer {
     private producer: Producer;
@@ -35,20 +35,19 @@ export class KafkaProducer {
         kafkaLogger.info("Kafka producer disconnected");
     }
 
-    async publish(message: NormalizedEvent): Promise<void> {
+    async publishBatch(messages: NormalizedEvent[]): Promise<void> {
+        if (messages.length === 0) return;
+
         await this.producer.send({
             topic: config.kafka.topicRaw,
-            messages: [
-                {
-                    key: Date.now().toString(),
-                    value: JSON.stringify(message),
-
-                    headers: {
-                        eventId: message.eventId,
-                        sourceReceivedAt: message.sourceReceivedAt.toString(),
-                    },
+            messages: messages.map((message) => ({
+                key: message.eventId,
+                value: JSON.stringify(message),
+                headers: {
+                    eventId: message.eventId,
+                    sourceReceivedAt: message.sourceReceivedAt.toString(),
                 },
-            ],
+            })),
         });
     }
 }
