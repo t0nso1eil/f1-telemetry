@@ -12,20 +12,20 @@ const pool = new Pool({
     database: env.postgres.database,
 });
 
-export async function waitForPostgres() {
+export async function waitForDb() {
     let retries = 10;
 
     while (retries) {
         try {
             await pool.query("SELECT 1");
-            logger.info("Postgres ready");
+            logger.info("DB ready");
             return;
         } catch (err) {
-            logger.warn("Waiting for Postgres...");
+            logger.warn("Waiting for DB...");
             retries--;
             await new Promise(res => setTimeout(res, 2000));
         }
     }
 
-    throw new Error("Postgres not available");
+    throw new Error("DB not available");
 }

@@ -1,5 +1,5 @@
 import { waitForKafka } from "./waitForKafka";
-import { waitForPostgres } from "./waitForPostgres";
+import { waitForDb } from "./waitForDb";
 import { waitForRedis } from "./waitForRedis";
 import { createLogger } from "../logger/logger";
 
@@ -9,7 +9,7 @@ export async function waitForDependencies() {
     logger.warn("Checking dependencies...");
 
     await retry(waitForKafka, "kafka");
-    await retry(waitForPostgres, "postgres");
+    await retry(waitForDb, "postgres");
     await retry(waitForRedis, "redis");
 
     logger.info("All dependencies are ready");
