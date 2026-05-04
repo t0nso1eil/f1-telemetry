@@ -24,12 +24,9 @@ export function buildRaceSnapshot(state: RaceState): RaceSnapshot {
     const drivers = sortDrivers([...patchedState.drivers.values()]);
 
     const snapshot: RaceSnapshot = {
-        schema_version: state.schemaVersion,
         session_key: state.sessionId,
-        sequence: state.sequence,
         generated_at: new Date().toISOString(),
         source_timestamp: toIso(state.sourceTimestamp),
-        interval_ms: 2000,
 
         session: {
             ...state.session,
@@ -85,7 +82,8 @@ export function buildRaceSnapshot(state: RaceState): RaceSnapshot {
 
     snapshotLogger.debug("Snapshot built", {
         drivers: snapshot.drivers.length,
-        sequence: snapshot.sequence,
+        generatedAt: snapshot.generated_at,
+        session_key: state.sessionId,
     });
 
     return snapshot;

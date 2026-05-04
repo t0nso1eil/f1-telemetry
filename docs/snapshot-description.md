@@ -22,25 +22,10 @@
 
 ```json
 {
-  "schema_version": {
-    "type": "integer",
-    "required": true,
-    "description": "Версия контракта snapshot. Нужна для безопасной эволюции схемы на backend и mobile."
-  },
-  "snapshot_id": {
-    "type": "string",
-    "required": true,
-    "description": "Уникальный идентификатор снапшота."
-  },
   "session_key": {
     "type": "string",
     "required": true,
     "description": "Стабильный идентификатор сессии в рамках этапа. Используется как ключ потока/кэша/истории."
-  },
-  "sequence": {
-    "type": "integer",
-    "required": true,
-    "description": "Монотонно растущий номер snapshot внутри одной сессии."
   },
   "generated_at": {
     "type": "string(date-time, ISO 8601 UTC)",

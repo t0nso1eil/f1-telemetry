@@ -2,10 +2,7 @@ import { RaceState } from "./raceState";
 
 export function createInitialState(): RaceState {
     return {
-        schemaVersion: 1,
-
         sessionId: "",
-        sequence: 0,
 
         generatedAt: undefined,
         sourceTimestamp: undefined,
