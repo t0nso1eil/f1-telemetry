@@ -34,9 +34,11 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
       KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092
+
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:29092,EXTERNAL://111.88.246.224:9092
 
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
 
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
@@ -44,30 +46,35 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
 
       KAFKA_MIN_INSYNC_REPLICAS: 2
+
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+
     healthcheck:
       test: [ "CMD", "cub", "kafka-ready", "-b", "localhost:9092", "1", "20" ]
       interval: 10s
       timeout: 10s
       retries: 10
 
-
   kafka-2:
     image: confluentinc/cp-kafka:7.5.0
     container_name: f1-kafka-2
     depends_on:
       - zookeeper
-    ports:
-      - "9093:9093"
+
+    expose:
+      - "29092"
+
     environment:
 
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
-      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29093,EXTERNAL://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-2:29093,EXTERNAL://111.88.246.224:9093
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092
 
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-2:29092
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT
+
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
 
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
@@ -75,30 +82,35 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
 
       KAFKA_MIN_INSYNC_REPLICAS: 2
+
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+
     healthcheck:
-      test: [ "CMD", "cub", "kafka-ready", "-b", "localhost:9093", "1", "20" ]
+      test: [ "CMD", "cub", "kafka-ready", "-b", "localhost:29092", "1", "20" ]
       interval: 10s
       timeout: 10s
       retries: 10
-
 
   kafka-3:
     image: confluentinc/cp-kafka:7.5.0
     container_name: f1-kafka-3
     depends_on:
       - zookeeper
-    ports:
-      - "9094:9094"
+
+    expose:
+      - "29092"
+
     environment:
 
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
-      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29094,EXTERNAL://0.0.0.0:9094
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-3:29094,EXTERNAL://111.88.246.224:9094
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092
 
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-3:29092
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT
+
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
 
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
@@ -106,19 +118,54 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
 
       KAFKA_MIN_INSYNC_REPLICAS: 2
+
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+
     healthcheck:
-      test: [ "CMD", "cub", "kafka-ready", "-b", "localhost:9094", "1", "20" ]
+      test: [ "CMD", "cub", "kafka-ready", "-b", "localhost:29092", "1", "20" ]
       interval: 10s
       timeout: 10s
       retries: 10
 
+  akhq:
+    image: tchiotludo/akhq
+    container_name: f1-akhq
+    depends_on:
+      kafka-1:
+        condition: service_healthy
+    ports:
+      - "9001:8080"
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            local:
+              properties:
+                bootstrap.servers: "kafka-1:29092"
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: f1-kafka-init
+
+    depends_on:
+      kafka-1:
+        condition: service_healthy
+      kafka-2:
+        condition: service_healthy
+      kafka-3:
+        condition: service_healthy
+
+    volumes:
+      - ./kafka-init.sh:/kafka-init.sh
+
+    entrypoint: ["/bin/bash", "/kafka-init.sh"]
 
   redis:
     image: redis:7-alpine
     container_name: f1-redis
     ports:
       - "6379:6379"
+
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 5s
@@ -136,15 +183,19 @@ services:
   timescaledb:
     image: timescale/timescaledb:latest-pg15
     container_name: f1-timescaledb
+
     ports:
       - "5433:5432"
+
     environment:
       POSTGRES_USER: f1
       POSTGRES_PASSWORD: f1
       POSTGRES_DB: telemetry
+
     volumes:
       - tsdata:/var/lib/postgresql/data
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U f1 -d telemetry" ]
       interval: 5s
@@ -154,163 +205,138 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     container_name: f1-pgadmin
+
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
+
     ports:
       - "5050:80"
+
     depends_on:
       - timescaledb
-
-  akhq:
-    image: tchiotludo/akhq
-    container_name: f1-akhq
-    depends_on:
-      - kafka-1
-    ports:
-      - "9001:8080"
-    environment:
-      AKHQ_CONFIGURATION: |
-        akhq:
-          connections:
-            local:
-              properties:
-                bootstrap.servers: "kafka-1:29092,kafka-2:29093,kafka-3:29094"
-
-
-  kafka-init:
-    image: confluentinc/cp-kafka:7.5.0
-    container_name: f1-kafka-init
-    depends_on:
-      kafka-1:
-        condition: service_healthy
-      kafka-2:
-        condition: service_healthy
-      kafka-3:
-        condition: service_healthy
-    entrypoint: /bin/bash
-    user: root
-    environment:
-      KAFKA_LOG4J_OPTS: "-Dlog4j.configuration=file:/etc/kafka/log4j.properties"
-    command: -ec "
-
-      echo 'Waiting for Kafka...';
-      cub kafka-ready -b kafka-1:29092 1 40;
-      
-      echo 'Creating telemetry.raw';
-      kafka-topics --create --if-not-exists --topic telemetry.raw --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 --replication-factor 3 --partitions 6 --config retention.ms=86400000 --config min.insync.replicas=2;
-      
-      echo 'Creating telemetry.snapshot';
-      kafka-topics --create --if-not-exists --topic telemetry.snapshot --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 --replication-factor 3 --partitions 3 --config retention.ms=-1;
-      
-      echo 'Creating system.logs';
-      kafka-topics --create --if-not-exists --topic system.logs --bootstrap-server kafka-1:29092,kafka-2:29093,kafka-3:29094 --replication-factor 3 --partitions 3 --config retention.ms=604800000;
-      
-      echo 'Topics successfully created';
-      "
 
   aggregator-service:
     build:
       context: ../../services/aggregator-service
       dockerfile: Dockerfile
+
     container_name: f1-aggregator
+
     env_file:
       - ../../services/aggregator-service/.env
+
     depends_on:
       kafka-1:
         condition: service_healthy
-      kafka-2:
-        condition: service_healthy
-      kafka-3:
-        condition: service_healthy
+
     ports:
       - "3100:3100"
-    healthcheck:
-      test: [ "CMD", "wget", "-qO-", "http://localhost:3100/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+
     restart: unless-stopped
 
   ingestion-service:
     profiles: ["real"]
+
     build:
       context: ../../services/ingestion-service
       dockerfile: Dockerfile
+
     container_name: f1-ingestion
+
     env_file:
       - ../../services/ingestion-service/.env
+
     depends_on:
-      - kafka-1
-      - kafka-2
-      - kafka-3
+      kafka-1:
+        condition: service_healthy
+
     restart: unless-stopped
 
   gateway-service:
     build:
       context: ../../services/gateway
       dockerfile: Dockerfile
+
     container_name: f1-gateway
+
     env_file:
       - ../../services/gateway/.env
+
     depends_on:
-      - kafka-1
-      - kafka-2
-      - kafka-3
-      - redis
-      - timescaledb
+      kafka-1:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+
     ports:
       - "3000:3000"
       - "3002:3002"
+
     restart: unless-stopped
 
   mock-ingestion-service:
     profiles: ["mock"]
+
     build:
       context: ../../services/mock-ingestion-service
+
     environment:
-      - KAFKA_BROKERS=kafka-1:29092,kafka-2:29093,kafka-3:29094
+      KAFKA_BROKERS: kafka-1:29092
+
     depends_on:
-      - kafka-1
-      - kafka-2
-      - kafka-3
+      kafka-1:
+        condition: service_healthy
 
   prometheus:
     image: prom/prometheus
     container_name: prometheus
+
     ports:
       - "9090:9090"
+
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
 
   grafana:
     image: grafana/grafana
     container_name: grafana
+
     ports:
       - "3001:3000"
+
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+
     volumes:
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
       - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+
     depends_on:
       - prometheus
 
   portainer:
     image: portainer/portainer-ce:latest
     container_name: f1-portainer
+
     restart: unless-stopped
+
     ports:
-      - "9000:9000"   # Web UI
-      - "9443:9443"   # HTTPS UI
+      - "9000:9000"
+      - "9443:9443"
+
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+
     environment:
-      - TZ=Europe/Helsinki
+      TZ: Europe/Helsinki
 
 volumes:
   tsdata:

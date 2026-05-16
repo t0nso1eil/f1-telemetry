@@ -45,7 +45,7 @@ export const env = {
     serviceName: requireEnv("SERVICE_NAME", "ingestion-service"),
 
     kafka: {
-        brokers: parseList("KAFKA_BROKERS", ["localhost:9092"]),
+        brokers: parseList("KAFKA_BROKERS", ["111.88.246.224:9092"]),
         clientId: requireEnv("KAFKA_CLIENT_ID", "ingestion-service"),
         topicRaw: requireEnv("KAFKA_TOPIC_RAW", "telemetry.raw"),
         retries: parseNumber("KAFKA_RETRIES", 10),
